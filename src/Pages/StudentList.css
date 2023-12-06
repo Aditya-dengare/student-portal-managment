@@ -1,0 +1,39 @@
+.displayname{
+    text-align: center;
+}
+.App {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin-top: 50px;
+   }
+   
+   .form-group {
+    margin-bottom: 20px;
+   }
+   
+   h2 {
+    margin-bottom: 20px;
+   }
+
+   .background-container {
+    background-color: #f0f0f0; /* Set your desired background color */
+    min-height: 100vh; /* Ensure the container takes at least the full height of the viewport */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-container {
+    margin: 0 auto; /* Center the container horizontally */
+    width: 100%; /* Take full width of the parent container */
+    max-width: 1200px; /* Set your desired max-width for the content */
+    flex: 1; /* Allow the container to grow and take remaining vertical space */
+    padding: 20px; /* Set your desired padding */
+    box-sizing: border-box; /* Include padding and border in the container's total width and height */
+  }
+  
+  .studentlist_button {
+    margin-bottom: 20px; /* Add margin to the button for spacing */
+  }
+  
+  /* Add any other styles you need for your student list table and other elements */
+  

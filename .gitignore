@@ -1,0 +1,26 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/.vs/student-portal-management/FileContentIndex/8575a190-5b82-41dc-abd0-efc0923d5fab.vsidx
+/.vs/student-portal-management/FileContentIndex/7155e712-d2b7-4f35-b961-2f19d6056b67.vsidx
+/.vs/student-portal-management/FileContentIndex/fa990cba-cb57-41f3-b167-64a2e752c0fd.vsidx
