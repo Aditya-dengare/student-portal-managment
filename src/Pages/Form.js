@@ -16,6 +16,7 @@ import { database } from "../firebase"
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { useLocation, useParams } from 'react-router-dom';
 import { useStudent } from '../StudentContext';
+import { Alert, AlertTitle, Snackbar, Stack } from '@mui/material';
 
 function Form() {
 
@@ -39,16 +40,19 @@ function Form() {
   const [courseduration, setcourseduration] = useState("");
   const [totalfee, settotalfee] = useState("");
   const [paidamount, setpaidamount] = useState("");
-  
+
 
   const [showUpdateButton, setShowUpdateButton] = useState(false);
+  const [showUpdateAlertMessage, setShowUpdateAlertMessage] = useState(false);
+  const [showSubmitAlertMessage, setShowSubmitAlertMessage] = useState(false);
+  const [open, setOpen] = React.useState(false);
 
   const value = collection(database, DBName);
 
   const location = useLocation();
   const searchParam = new URLSearchParams(location.search);
 
-  
+
 
   // const getData = async () => {
   //   const _id = searchParam.get('id')
@@ -87,7 +91,7 @@ function Form() {
   //   setShowUpdateButton(true);
   // };
 
-  useEffect(() =>{
+  useEffect(() => {
     // if (searchParam.get('firstname') != null){
     //   getData();
     // }
@@ -129,7 +133,7 @@ function Form() {
       settotalfee("");
       setpaidamount("");
     }
-  },[selectedStudent])
+  }, [selectedStudent])
 
   const Categories = [
     { label: 'General' },
@@ -149,62 +153,27 @@ function Form() {
     { label: 'B.COM' }
   ]
 
-  
-  
+
+
   //Add Student Data into Database
   const handleCreate = async () => {
-    await addDoc(value, {FirstName: firstname, 
-                         LastName: lastname, 
-                         FatherName: fathername, 
-                         MotherName: mothername,
-                         ContactNumber: contactnumber,
-                         AadharNumber: aadharnumber,
-                         State: state,
-                         City: city,
-                         Address: address,
-                         Category: category,
-                         UniversityName: universityname,
-                         CourseName: coursename,
-                         CourseSubject: coursesubject,
-                         TotalFee: totalfee,
-                         PaidAmount: paidamount,
-                         PendingAmount: totalfee - paidamount});
-    setfirstname("");
-    setlastname("");
-    setfathername("");
-    setmothername("");
-    setcontactnumber("");
-    setaadharnumber("");
-    setstate("");
-    setcity("");
-    setaddress("");
-    setcategory(null);
-    setuniversityname(null);
-    setcoursename(null);
-    setcoursesubject("");
-    settotalfee("");
-    setpaidamount("");
-  }
-
-  //Update Student Details
-  const handleUpdate = async () => {
-    const updateValues = doc(database, DBName, selectedStudent.id)
-    await updateDoc(updateValues, { 
-      FirstName: firstname, 
-      LastName: lastname, 
-      FatherName: fathername, 
-      MotherName: mothername, 
+    await addDoc(value, {
+      FirstName: firstname,
+      LastName: lastname,
+      FatherName: fathername,
+      MotherName: mothername,
       ContactNumber: contactnumber,
       AadharNumber: aadharnumber,
       State: state,
       City: city,
-      Category: category,
       Address: address,
+      Category: category,
       UniversityName: universityname,
       CourseName: coursename,
       CourseSubject: coursesubject,
       TotalFee: totalfee,
-      PaidAmount: paidamount
+      PaidAmount: paidamount,
+      PendingAmount: totalfee - paidamount
     });
     setfirstname("");
     setlastname("");
@@ -221,17 +190,90 @@ function Form() {
     setcoursesubject("");
     settotalfee("");
     setpaidamount("");
+
+    setShowSubmitAlertMessage(true);
+    setOpen(true);
   }
-  
+
+  //Update Student Details
+  const handleUpdate = async () => {
+    const updateValues = doc(database, DBName, selectedStudent.id)
+    await updateDoc(updateValues, {
+      FirstName: firstname,
+      LastName: lastname,
+      FatherName: fathername,
+      MotherName: mothername,
+      ContactNumber: contactnumber,
+      AadharNumber: aadharnumber,
+      State: state,
+      City: city,
+      Category: category,
+      Address: address,
+      UniversityName: universityname,
+      CourseName: coursename,
+      CourseSubject: coursesubject,
+      TotalFee: totalfee,
+      PaidAmount: paidamount,
+      PendingAmount: totalfee - paidamount
+    });
+    setfirstname("");
+    setlastname("");
+    setfathername("");
+    setmothername("");
+    setcontactnumber("");
+    setaadharnumber("");
+    setstate("");
+    setcity("");
+    setaddress("");
+    setcategory(null);
+    setuniversityname(null);
+    setcoursename(null);
+    setcoursesubject("");
+    settotalfee("");
+    setpaidamount("");
+
+    setShowUpdateAlertMessage(true);
+    setOpen(true);
+    setShowUpdateButton(false);
+  }
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+    setShowUpdateAlertMessage(false);
+  };
+
   return (
     <div className="background-container">
-      <Container className="form-container"> 
+      <Container className="form-container">
         <h1 className="displayname">Student Details</h1>
         <Link to="/StudentList" className="student-list-link">
           <Button variant="contained" color="secondary" startIcon={<FormatListBulletedIcon />}>
             Student List
           </Button>
         </Link>
+
+        {showUpdateAlertMessage && (
+          <Stack spacing={2} sx={{ width: "100%" }}>
+            <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
+              <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+                <strong>Data Updated SuccessFully</strong>
+              </Alert>
+            </Snackbar>
+          </Stack>
+        )}
+
+        {showSubmitAlertMessage && (
+          <Stack spacing={2} sx={{ width: "100%" }}>
+            <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
+              <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+                <strong>Data Added SuccessFully</strong>
+              </Alert>
+            </Snackbar>
+          </Stack>
+        )}
 
         <form>
           <Grid container spacing={3}>
@@ -409,7 +451,7 @@ function Form() {
                 label="Course Duration"
                 variant="outlined"
                 fullWidth
-                //required
+              //required
               />
             </Grid>
 
@@ -439,18 +481,18 @@ function Form() {
             </Grid>
             <Grid item xs={12}>
               <InputLabel htmlFor="attachment">Attachment</InputLabel>
-              <Input type="file" id="attachment"  fullWidth />
+              <Input type="file" id="attachment" fullWidth />
             </Grid>
 
             <Grid item xs={12} md={6}>
-              { !showUpdateButton ? 
-                <Button variant="contained" color="primary" startIcon={<SaveIcon />} o fullWidth  onClick={handleCreate}>Submit</Button> :
+              {!showUpdateButton ?
+                <Button variant="contained" color="primary" startIcon={<SaveIcon />} o fullWidth onClick={handleCreate}>Submit</Button> :
                 <Button variant="contained" color="primary" startIcon={<EditIcon />} o fullWidth onClick={handleUpdate}>Update</Button>
               }
-              
+
             </Grid>
             <Grid item xs={12} md={6}>
-              <Button variant="contained" color="error" startIcon={<RefreshIcon />}  fullWidth type="reset">
+              <Button variant="contained" color="error" startIcon={<RefreshIcon />} fullWidth type="reset">
                 Reset
               </Button>
             </Grid>

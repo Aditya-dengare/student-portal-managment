@@ -107,8 +107,8 @@ function StudentList() {
               val.map(values =>
                 <TableRow key = {values.id}>
                   <StyledTableCell align="right">{values.FirstName} {values.LastName}</StyledTableCell>
-                  <StyledTableCell align="right">{values.UniversityName.label}</StyledTableCell>
-                  <StyledTableCell align="right">{values.CourseName.label}</StyledTableCell>
+                  <StyledTableCell align="right">{values.UniversityName.label == null ? values.UniversityName : values.UniversityName.label}</StyledTableCell>
+                  <StyledTableCell align="right">{values.CourseName.label == null ? values.CourseName : values.CourseName.label}</StyledTableCell>
                   <TotalAmount align="right">{values.TotalFee}</TotalAmount>
                   <TotalPaidAmount align="right">{values.PaidAmount}</TotalPaidAmount>
                   <PendingAmount align="right">{values.PendingAmount}</PendingAmount>
