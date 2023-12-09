@@ -1,14 +1,17 @@
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom'
 import Form from './Pages/Form';
 import StudentList from './Pages/StudentList'
+import { StudentProvider } from './StudentContext';
 
 function App() {
   return (
     <Router>
+      <StudentProvider>
       <Routes>
         <Route path='*' Component={Form}></Route>
         <Route path="/studentlist" element={<StudentList />} />
       </Routes>
+      </StudentProvider>
     </Router>
   );
 }

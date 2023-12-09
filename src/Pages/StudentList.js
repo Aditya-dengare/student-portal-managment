@@ -9,6 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { styled } from '@mui/system';
 import { database } from "../firebase";
 import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
+import { useStudent } from "../StudentContext";
 
 function StudentList() {
 
@@ -16,6 +17,7 @@ function StudentList() {
   const value = collection(database, DBName);
   const navigate = useNavigate();
   const [val, setVal] = useState([]);
+  const { setStudent, clearStudent } = useStudent();
 
   const StyledTableCell = styled(TableCell)({
     fontWeight: 'bold',
@@ -62,18 +64,29 @@ function StudentList() {
     window.location.reload();
   };
 
+  // const handleEdit = async (id, FirstName, LastName, FatherName, MotherName, ContactNumber, AadharNumber, State, City, Category, Address, UniversityName, CourseName, CourseSubject, CourseDuration, TotalFEE, PaidAmount) => {
+  //   navigate(`/Form?id=${id}&firstname=${FirstName}&lastname=${LastName}&fathername=${FatherName}&mothername=${MotherName}
+  //     &contactnumber=${ContactNumber}&aadharnumber=${AadharNumber}&state=${State}&city=${City}&category=${Category}&address=${Address}
+  //     &universityname=${UniversityName}&coursename=${CourseName}&coursesubject=${CourseSubject}&courseduration=${CourseDuration}&totalfee=${TotalFEE}&paidamount=${PaidAmount}
+  //   `);
+  // };
+
   const handleEdit = async (id, FirstName, LastName, FatherName, MotherName, ContactNumber, AadharNumber, State, City, Category, Address, UniversityName, CourseName, CourseSubject, CourseDuration, TotalFEE, PaidAmount) => {
-    navigate(`/Form?id=${id}&firstname=${FirstName}&lastname=${LastName}&fathername=${FatherName}&mothername=${MotherName}
-      &contactnumber=${ContactNumber}&aadharnumber=${AadharNumber}&state=${State}&city=${City}&category=${Category}&address=${Address}
-      &universityname=${UniversityName}&coursename=${CourseName}&coursesubject=${CourseSubject}&courseduration=${CourseDuration}&totalfee=${TotalFEE}&paidamount=${PaidAmount}
-    `);
+    setStudent({
+      id, FirstName ,LastName, FatherName, MotherName, ContactNumber, AadharNumber, State, City, Category, Address, UniversityName, CourseName, CourseSubject, CourseDuration, TotalFEE, PaidAmount
+    })
+    navigate(`/Form`);
+  }
+
+  const handleClearStudent = () => {
+    clearStudent();
   };
 
   return (
     <div>
       <h1 className='displayname'>Student List</h1>
       <Link to="/Form" className='studentlist_button'>
-        <Button variant="outlined" startIcon={<AddIcon />}>Add Student</Button>
+        <Button variant="outlined" startIcon={<AddIcon />} onClick={handleClearStudent}>Add Student</Button>
       </Link>
 
       <TableContainer component={Paper}>
@@ -103,8 +116,8 @@ function StudentList() {
                   <Button variant="outlined" color="error" startIcon={<DeleteIcon />} onClick={() => handleDelete(values.id)}>Delete</Button>
                   <Button variant="outlined" color="primary" startIcon={<EditIcon />}
                     onClick={() => handleEdit(values.id, values.FirstName, values.LastName, values.FatherName, values.MotherName,
-                      values.ContactNumber, values.AadharNumber, values.State, values.City, values.Category.label, values.Address,
-                      values.UniversityName.label, values.CourseName.label, values.CourseSubject, values.CourseDuration, values.TotalFee,
+                      values.ContactNumber, values.AadharNumber, values.State, values.City, values.Category.label == null ? values.Category : values.Category.label, values.Address,
+                      values.UniversityName.label == null ? values.UniversityName : values.UniversityName.label, values.CourseName.label == null ? values.CourseName : values.CourseName.label, values.CourseSubject, values.CourseDuration, values.TotalFee,
                       values.PaidAmount
                       )}
                   >Edit</Button>

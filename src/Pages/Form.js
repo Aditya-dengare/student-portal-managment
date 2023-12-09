@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './Form.css';
 import Button from '@mui/material/Button';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
-import { Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -10,15 +10,19 @@ import TextField from '@mui/material/TextField';
 import Input from '@mui/material/Input';
 import InputLabel from '@mui/material/InputLabel';
 import SaveIcon from '@mui/icons-material/Save';
+import EditIcon from '@mui/icons-material/Edit';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { database } from "../firebase"
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { useLocation, useParams } from 'react-router-dom';
+import { useStudent } from '../StudentContext';
 
 function Form() {
 
   const DBName = "StudentData";
 
+  const { selectedStudent, setStudent } = useStudent();
+  const [id, setId] = useState("");
   const [firstname, setfirstname] = useState("");
   const [lastname, setlastname] = useState("");
   const [fathername, setfathername] = useState("");
@@ -32,8 +36,12 @@ function Form() {
   const [universityname, setuniversityname] = useState("");
   const [coursename, setcoursename] = useState("");
   const [coursesubject, setcoursesubject] = useState("");
+  const [courseduration, setcourseduration] = useState("");
   const [totalfee, settotalfee] = useState("");
   const [paidamount, setpaidamount] = useState("");
+  
+
+  const [showUpdateButton, setShowUpdateButton] = useState(false);
 
   const value = collection(database, DBName);
 
@@ -42,45 +50,86 @@ function Form() {
 
   
 
-  const getData = async () => {
-    const first_name = searchParam.get('firstname');
-    const last_name = searchParam.get('lastname');
-    const father_name = searchParam.get('fathername');
-    const mother_name = searchParam.get('mothername');
-    const contact_number = searchParam.get('contactnumber');
-    const aadhar_number = searchParam.get('aadharnumber');
-    const state_ = searchParam.get('state');
-    const city_ = searchParam.get('city');
-    const category_ = searchParam.get('category');
-    const address_ = searchParam.get('address');
-    const university_name = searchParam.get('universityname');
-    const course_name = searchParam.get('coursename');
-    const course_subject = searchParam.get('coursesubject');
-    const course_duration = searchParam.get('courseduration');
-    const total_fee = searchParam.get('totalfee');
-    const paid_amount = searchParam.get('paidamount');
-    setfirstname(first_name);
-    setlastname(last_name);
-    setfathername(father_name);
-    setmothername(mother_name);
-    setcontactnumber(contact_number);
-    setaadharnumber(aadhar_number);
-    setstate(state_);
-    setcity(city_);
-    setcategory(category_);
-    setaddress(address_);
-    setuniversityname(university_name);
-    setcoursename(course_name);
-    setcoursesubject(course_subject);
-    settotalfee(total_fee);
-    setpaidamount(paid_amount);
-  };
+  // const getData = async () => {
+  //   const _id = searchParam.get('id')
+  //   const first_name = searchParam.get('firstname');
+  //   const last_name = searchParam.get('lastname');
+  //   const father_name = searchParam.get('fathername');
+  //   const mother_name = searchParam.get('mothername');
+  //   const contact_number = searchParam.get('contactnumber');
+  //   const aadhar_number = searchParam.get('aadharnumber');
+  //   const state_ = searchParam.get('state');
+  //   const city_ = searchParam.get('city');
+  //   const category_ = searchParam.get('category');
+  //   const address_ = searchParam.get('address');
+  //   const university_name = searchParam.get('universityname');
+  //   const course_name = searchParam.get('coursename');
+  //   const course_subject = searchParam.get('coursesubject');
+  //   const course_duration = searchParam.get('courseduration');
+  //   const total_fee = searchParam.get('totalfee');
+  //   const paid_amount = searchParam.get('paidamount');
+  //   setId(_id);
+  //   setfirstname(first_name);
+  //   setlastname(last_name);
+  //   setfathername(father_name);
+  //   setmothername(mother_name);
+  //   setcontactnumber(contact_number);
+  //   setaadharnumber(aadhar_number);
+  //   setstate(state_);
+  //   setcity(city_);
+  //   setcategory(category_);
+  //   setaddress(address_);
+  //   setuniversityname(university_name);
+  //   setcoursename(course_name);
+  //   setcoursesubject(course_subject);
+  //   settotalfee(total_fee);
+  //   setpaidamount(paid_amount);
+  //   setShowUpdateButton(true);
+  // };
 
   useEffect(() =>{
-    if (searchParam.get('firstname') != null){
-      getData();
+    // if (searchParam.get('firstname') != null){
+    //   getData();
+    // }
+    if (selectedStudent) {
+      setId(selectedStudent.id);
+      setfirstname(selectedStudent.FirstName);
+      setlastname(selectedStudent.LastName);
+      setfathername(selectedStudent.FatherName);
+      setmothername(selectedStudent.MotherName);
+      setcontactnumber(selectedStudent.ContactNumber);
+      setaadharnumber(selectedStudent.AadharNumber);
+      setstate(selectedStudent.State);
+      setcity(selectedStudent.City);
+      setcategory(selectedStudent.Category);
+      setaddress(selectedStudent.Address);
+      setuniversityname(selectedStudent.UniversityName);
+      setcoursename(selectedStudent.CourseName);
+      setcoursesubject(selectedStudent.CourseSubject);
+      setcourseduration(selectedStudent.CourseDuration);
+      settotalfee(selectedStudent.TotalFEE);
+      setpaidamount(selectedStudent.PaidAmount);
+      setShowUpdateButton(true);
     }
-  })
+    else {
+      setId("");
+      setfirstname("");
+      setlastname("");
+      setfathername("");
+      setmothername("");
+      setcontactnumber("");
+      setaadharnumber("");
+      setstate("");
+      setcity("");
+      setcategory("");
+      setaddress("");
+      setuniversityname("");
+      setcoursename("");
+      setcoursesubject("");
+      settotalfee("");
+      setpaidamount("");
+    }
+  },[selectedStudent])
 
   const Categories = [
     { label: 'General' },
@@ -120,6 +169,43 @@ function Form() {
                          TotalFee: totalfee,
                          PaidAmount: paidamount,
                          PendingAmount: totalfee - paidamount});
+    setfirstname("");
+    setlastname("");
+    setfathername("");
+    setmothername("");
+    setcontactnumber("");
+    setaadharnumber("");
+    setstate("");
+    setcity("");
+    setaddress("");
+    setcategory(null);
+    setuniversityname(null);
+    setcoursename(null);
+    setcoursesubject("");
+    settotalfee("");
+    setpaidamount("");
+  }
+
+  //Update Student Details
+  const handleUpdate = async () => {
+    const updateValues = doc(database, DBName, selectedStudent.id)
+    await updateDoc(updateValues, { 
+      FirstName: firstname, 
+      LastName: lastname, 
+      FatherName: fathername, 
+      MotherName: mothername, 
+      ContactNumber: contactnumber,
+      AadharNumber: aadharnumber,
+      State: state,
+      City: city,
+      Category: category,
+      Address: address,
+      UniversityName: universityname,
+      CourseName: coursename,
+      CourseSubject: coursesubject,
+      TotalFee: totalfee,
+      PaidAmount: paidamount
+    });
     setfirstname("");
     setlastname("");
     setfathername("");
@@ -357,9 +443,11 @@ function Form() {
             </Grid>
 
             <Grid item xs={12} md={6}>
-              <Button variant="contained" color="primary" startIcon={<SaveIcon />} o fullWidth  onClick={handleCreate}>
-                Submit
-              </Button>
+              { !showUpdateButton ? 
+                <Button variant="contained" color="primary" startIcon={<SaveIcon />} o fullWidth  onClick={handleCreate}>Submit</Button> :
+                <Button variant="contained" color="primary" startIcon={<EditIcon />} o fullWidth onClick={handleUpdate}>Update</Button>
+              }
+              
             </Grid>
             <Grid item xs={12} md={6}>
               <Button variant="contained" color="error" startIcon={<RefreshIcon />}  fullWidth type="reset">
