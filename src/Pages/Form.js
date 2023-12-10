@@ -16,7 +16,9 @@ import { database } from "../firebase"
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { useLocation, useParams } from 'react-router-dom';
 import { useStudent } from '../StudentContext';
-import { Alert, AlertTitle, Snackbar, Stack } from '@mui/material';
+import { Alert, Snackbar, Stack } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 function Form() {
 
@@ -234,6 +236,18 @@ function Form() {
     settotalfee("");
     setpaidamount("");
   }
+
+  const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+  });
 
   return (
     <div className="background-container">
@@ -470,8 +484,13 @@ function Form() {
               {/* ... (other additional information fields) */}
             </Grid>
             <Grid item xs={12}>
-              <InputLabel htmlFor="attachment">Attachment</InputLabel>
-              <Input type="file" id="attachment" fullWidth />
+              {/* <InputLabel htmlFor="attachment">Attachment</InputLabel>
+              <Input type="file" id="attachment" fullWidth /> */}
+
+              <Button component="label" color="secondary" variant="contained" startIcon={<CloudUploadIcon />}>
+                Upload file
+                <VisuallyHiddenInput type="file" />
+              </Button>
             </Grid>
 
             <Grid item xs={12} md={6}>
