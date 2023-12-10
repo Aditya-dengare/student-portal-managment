@@ -111,7 +111,7 @@ function StudentList() {
             )}>
             <EditIcon />
           </IconButton>
-          <IconButton color="error" onClick={() => handleDelete(params.row.id)}>
+          <IconButton color="error" onClick={() => handleDelete(params.row.firebaseindex)}>
             <DeleteIcon />
           </IconButton>
 
