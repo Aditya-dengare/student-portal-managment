@@ -52,13 +52,8 @@ function Form() {
   const value = collection(database, DBName);
 
   const location = useLocation();
-  const searchParam = new URLSearchParams(location.search);
-
-
-
 
   useEffect(() => {
-
     if (selectedStudent) {
       setId(selectedStudent.id);
       setfirstname(selectedStudent.FirstName);
@@ -74,7 +69,6 @@ function Form() {
       setuniversityname(selectedStudent.UniversityName);
       setcoursename(selectedStudent.CourseName);
       setcoursesubject(selectedStudent.CourseSubject);
-      setcourseduration(selectedStudent.CourseDuration);
       settotalfee(selectedStudent.TotalFEE);
       setpaidamount(selectedStudent.PaidAmount);
       setShowUpdateButton(true);

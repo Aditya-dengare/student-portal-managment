@@ -68,9 +68,9 @@ function StudentList() {
   };
 
   //This function is used to edit table data and move to Form.Js page
-  const handleEdit = async (id, FirstName, LastName, FatherName, MotherName, ContactNumber, AadharNumber, State, City, Category, Address, UniversityName, CourseName, CourseSubject, CourseDuration, TotalFEE, PaidAmount) => {
+  const handleEdit = async (id, FirstName, LastName, FatherName, MotherName, ContactNumber, AadharNumber, State, City, Category, Address, UniversityName, CourseName, CourseSubject, TotalFEE, PaidAmount) => {
     setStudent({
-      id, FirstName, LastName, FatherName, MotherName, ContactNumber, AadharNumber, State, City, Category, Address, UniversityName, CourseName, CourseSubject, CourseDuration, TotalFEE, PaidAmount
+      id, FirstName, LastName, FatherName, MotherName, ContactNumber, AadharNumber, State, City, Category, Address, UniversityName, CourseName, CourseSubject, TotalFEE, PaidAmount
     })
     navigate(`/Form`);
   }
@@ -91,7 +91,24 @@ function StudentList() {
       width: 150,
       renderCell: (params) => (
         <>
-          <IconButton color="primary" onClick={() => handleEdit(params.row.id, params.row.name, /* other params.row properties... */)}>
+          <IconButton color="primary" onClick={() => handleEdit(
+            params.row.firebaseindex, 
+            params.row.firstname, 
+            params.row.lastname, 
+            params.row.fathername, 
+            params.row.mothername,
+            params.row.contactnumber,
+            params.row.aadharnumber,
+            params.row.state,
+            params.row.city,
+            params.row.category,
+            params.row.address,
+            params.row.universityName,
+            params.row.courseName,
+            params.row.coursesubject,
+            params.row.totalFee,
+            params.row.paidAmount
+            )}>
             <EditIcon />
           </IconButton>
           <IconButton color="error" onClick={() => handleDelete(params.row.id)}>
@@ -105,9 +122,21 @@ function StudentList() {
 
   const rows = val.map((values, index) => ({
     id: index,
+    firebaseindex: values.id,
+    firstname: values.FirstName,
+    lastname: values.LastName,
+    fathername: values.FatherName,
+    mothername: values.MotherName,
+    contactnumber: values.ContactNumber,
+    aadharnumber: values.AadharNumber,
+    state: values.State,
+    city: values.City,
+    category: values.Category.label == null ? values.Category : values.Category.label,
+    address: values.Address,
     name: values.FirstName + ' ' + values.LastName,
-    universityName: values.UniversityName,
-    courseName: values.CourseName,
+    universityName: values.UniversityName.label == null ? values.UniversityName : values.UniversityName.label,
+    courseName: values.CourseName.label == null ? values.CourseName : values.CourseName.label,
+    coursesubject: values.CourseSubject,
     totalFee: values.TotalFee,
     paidAmount: values.PaidAmount,
     remainingAmount: values.PendingAmount,
@@ -120,7 +149,7 @@ function StudentList() {
         <Button variant="contained" color="secondary" startIcon={<AddIcon />} onClick={handleClearStudent}>Add Student</Button>
       </Link>
 
-      <Box sx={{ height: 400, width: '100%' }}>
+      <Box sx={{ height: 400, width: '100%' }} className="student_list">
         <DataGrid
           rows={rows}
           disableColumnFilter
