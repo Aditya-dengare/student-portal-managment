@@ -32,7 +32,11 @@
   }
   
   .studentlist_button {
-    margin-bottom: 20px; /* Add margin to the button for spacing */
+    margin-bottom: 30px; /* Add margin to the button for spacing */
+  }
+
+  .student_list {
+    margin-top: 30px;
   }
   
   /* Add any other styles you need for your student list table and other elements */

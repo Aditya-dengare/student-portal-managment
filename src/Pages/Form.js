@@ -155,7 +155,7 @@ function Form() {
 
 
 
-  //Add Student Data into Database
+  //This function is used to Add Student Details
   const handleCreate = async () => {
     await addDoc(value, {
       FirstName: firstname,
@@ -175,27 +175,12 @@ function Form() {
       PaidAmount: paidamount,
       PendingAmount: totalfee - paidamount
     });
-    setfirstname("");
-    setlastname("");
-    setfathername("");
-    setmothername("");
-    setcontactnumber("");
-    setaadharnumber("");
-    setstate("");
-    setcity("");
-    setaddress("");
-    setcategory(null);
-    setuniversityname(null);
-    setcoursename(null);
-    setcoursesubject("");
-    settotalfee("");
-    setpaidamount("");
-
+    clearStudentState();
     setShowSubmitAlertMessage(true);
     setOpen(true);
   }
 
-  //Update Student Details
+  //This function is used to update Student Details
   const handleUpdate = async () => {
     const updateValues = doc(database, DBName, selectedStudent.id)
     await updateDoc(updateValues, {
@@ -216,6 +201,23 @@ function Form() {
       PaidAmount: paidamount,
       PendingAmount: totalfee - paidamount
     });
+    clearStudentState();
+    setShowUpdateAlertMessage(true);
+    setOpen(true);
+    setShowUpdateButton(false);
+  }
+
+  // This function is used for Success Pop Close
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+    setShowUpdateAlertMessage(false);
+  };
+
+  //This function is used to clear Student State
+  const clearStudentState = () => {
     setfirstname("");
     setlastname("");
     setfathername("");
@@ -231,19 +233,7 @@ function Form() {
     setcoursesubject("");
     settotalfee("");
     setpaidamount("");
-
-    setShowUpdateAlertMessage(true);
-    setOpen(true);
-    setShowUpdateButton(false);
   }
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpen(false);
-    setShowUpdateAlertMessage(false);
-  };
 
   return (
     <div className="background-container">
