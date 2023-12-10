@@ -3,10 +3,12 @@ import './StudentList.css'
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import { Link, useNavigate } from 'react-router-dom';
-import { Container, Grid, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { TableCell } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { styled } from '@mui/system';
+import Box from '@mui/material/Box';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { database } from "../firebase";
 import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { useStudent } from "../StudentContext";
@@ -46,7 +48,7 @@ function StudentList() {
 
   const ActionCell = styled(TableCell)({
     display: 'flex',
-    gap: '8px', 
+    gap: '8px',
   });
 
   //This is function is used to view data into table
@@ -65,17 +67,10 @@ function StudentList() {
     window.location.reload();
   };
 
-  // const handleEdit = async (id, FirstName, LastName, FatherName, MotherName, ContactNumber, AadharNumber, State, City, Category, Address, UniversityName, CourseName, CourseSubject, CourseDuration, TotalFEE, PaidAmount) => {
-  //   navigate(`/Form?id=${id}&firstname=${FirstName}&lastname=${LastName}&fathername=${FatherName}&mothername=${MotherName}
-  //     &contactnumber=${ContactNumber}&aadharnumber=${AadharNumber}&state=${State}&city=${City}&category=${Category}&address=${Address}
-  //     &universityname=${UniversityName}&coursename=${CourseName}&coursesubject=${CourseSubject}&courseduration=${CourseDuration}&totalfee=${TotalFEE}&paidamount=${PaidAmount}
-  //   `);
-  // };
-
   //This function is used to edit table data and move to Form.Js page
   const handleEdit = async (id, FirstName, LastName, FatherName, MotherName, ContactNumber, AadharNumber, State, City, Category, Address, UniversityName, CourseName, CourseSubject, CourseDuration, TotalFEE, PaidAmount) => {
     setStudent({
-      id, FirstName ,LastName, FatherName, MotherName, ContactNumber, AadharNumber, State, City, Category, Address, UniversityName, CourseName, CourseSubject, CourseDuration, TotalFEE, PaidAmount
+      id, FirstName, LastName, FatherName, MotherName, ContactNumber, AadharNumber, State, City, Category, Address, UniversityName, CourseName, CourseSubject, CourseDuration, TotalFEE, PaidAmount
     })
     navigate(`/Form`);
   }
@@ -83,6 +78,40 @@ function StudentList() {
   const handleClearStudent = () => {
     clearStudent();
   };
+  const columns = [
+    { field: 'name', headerName: 'Name', width: 300 },
+    { field: 'universityName', headerName: 'University Name', width: 300 },
+    { field: 'courseName', headerName: 'Course Name', width: 250 },
+    { field: 'totalFee', headerName: 'Total Fee', width: 130 },
+    { field: 'paidAmount', headerName: 'Paid Amount', width: 200 },
+    { field: 'remainingAmount', headerName: 'Remaining Amount', width: 200 },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      width: 150,
+      renderCell: (params) => (
+        <>
+          <IconButton color="primary" onClick={() => handleEdit(params.row.id, params.row.name, /* other params.row properties... */)}>
+            <EditIcon />
+          </IconButton>
+          <IconButton color="error" onClick={() => handleDelete(params.row.id)}>
+            <DeleteIcon />
+          </IconButton>
+
+        </>
+      ),
+    },
+  ];
+
+  const rows = val.map((values, index) => ({
+    id: index,
+    name: values.FirstName + ' ' + values.LastName,
+    universityName: values.UniversityName,
+    courseName: values.CourseName,
+    totalFee: values.TotalFee,
+    paidAmount: values.PaidAmount,
+    remainingAmount: values.PendingAmount,
+  }));
 
   return (
     <div>
@@ -91,53 +120,21 @@ function StudentList() {
         <Button variant="contained" color="secondary" startIcon={<AddIcon />} onClick={handleClearStudent}>Add Student</Button>
       </Link>
 
-      <TableContainer component={Paper} className="student_list">
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <StyledTableCell align="right">Name</StyledTableCell>
-              <StyledTableCell align="right">University Name</StyledTableCell>
-              <StyledTableCell align="right">Course Name</StyledTableCell>
-              <StyledTableCell align="right">Total Fee</StyledTableCell>
-              <StyledTableCell align="right">Paid Amount</StyledTableCell>
-              <StyledTableCell align="right">Remaining Amount</StyledTableCell>
-              <StyledTableCell align="right">Actions</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {
-              val.map(values =>
-                <TableRow key = {values.id}>
-                  <StyledTableCell align="right">{values.FirstName} {values.LastName}</StyledTableCell>
-                  <StyledTableCell align="right">{values.UniversityName.label == null ? values.UniversityName : values.UniversityName.label}</StyledTableCell>
-                  <StyledTableCell align="right">{values.CourseName.label == null ? values.CourseName : values.CourseName.label}</StyledTableCell>
-                  <TotalAmount align="right">{values.TotalFee}</TotalAmount>
-                  <TotalPaidAmount align="right">{values.PaidAmount}</TotalPaidAmount>
-                  <PendingAmount align="right">{values.PendingAmount}</PendingAmount>
-                  <ActionCell align="right">
-                    {/* <IconButton color="error" onClick={() => handleDelete(values.id)}><DeleteIcon /></IconButton>
-                    <IconButton color="primary"
-                      onClick={() => handleEdit(values.id, values.FirstName, values.LastName, values.FatherName, values.MotherName,
-                        values.ContactNumber, values.AadharNumber, values.State, values.City, values.Category.label == null ? values.Category : values.Category.label, values.Address,
-                        values.UniversityName.label == null ? values.UniversityName : values.UniversityName.label, values.CourseName.label == null ? values.CourseName : values.CourseName.label, values.CourseSubject, values.CourseDuration, values.TotalFee,
-                        values.PaidAmount
-                        )}
-                    ><EditIcon /></IconButton> */}
-                  <Button variant="outlined" color="error" startIcon={<DeleteIcon />} onClick={() => handleDelete(values.id)}>Delete</Button>
-                  <Button variant="outlined" color="primary" startIcon={<EditIcon />}
-                    onClick={() => handleEdit(values.id, values.FirstName, values.LastName, values.FatherName, values.MotherName,
-                      values.ContactNumber, values.AadharNumber, values.State, values.City, values.Category.label == null ? values.Category : values.Category.label, values.Address,
-                      values.UniversityName.label == null ? values.UniversityName : values.UniversityName.label, values.CourseName.label == null ? values.CourseName : values.CourseName.label, values.CourseSubject, values.CourseDuration, values.TotalFee,
-                      values.PaidAmount
-                      )}
-                  >Edit</Button>
-                  </ActionCell>
-                </TableRow>
-              )
-            }
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Box sx={{ height: 400, width: '100%' }}>
+        <DataGrid
+          rows={rows}
+          disableColumnFilter
+          disableColumnSelector
+          disableDensitySelector
+          columns={columns}
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+        />
+      </Box>
     </div>
   );
 }

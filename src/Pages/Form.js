@@ -56,47 +56,9 @@ function Form() {
 
 
 
-  // const getData = async () => {
-  //   const _id = searchParam.get('id')
-  //   const first_name = searchParam.get('firstname');
-  //   const last_name = searchParam.get('lastname');
-  //   const father_name = searchParam.get('fathername');
-  //   const mother_name = searchParam.get('mothername');
-  //   const contact_number = searchParam.get('contactnumber');
-  //   const aadhar_number = searchParam.get('aadharnumber');
-  //   const state_ = searchParam.get('state');
-  //   const city_ = searchParam.get('city');
-  //   const category_ = searchParam.get('category');
-  //   const address_ = searchParam.get('address');
-  //   const university_name = searchParam.get('universityname');
-  //   const course_name = searchParam.get('coursename');
-  //   const course_subject = searchParam.get('coursesubject');
-  //   const course_duration = searchParam.get('courseduration');
-  //   const total_fee = searchParam.get('totalfee');
-  //   const paid_amount = searchParam.get('paidamount');
-  //   setId(_id);
-  //   setfirstname(first_name);
-  //   setlastname(last_name);
-  //   setfathername(father_name);
-  //   setmothername(mother_name);
-  //   setcontactnumber(contact_number);
-  //   setaadharnumber(aadhar_number);
-  //   setstate(state_);
-  //   setcity(city_);
-  //   setcategory(category_);
-  //   setaddress(address_);
-  //   setuniversityname(university_name);
-  //   setcoursename(course_name);
-  //   setcoursesubject(course_subject);
-  //   settotalfee(total_fee);
-  //   setpaidamount(paid_amount);
-  //   setShowUpdateButton(true);
-  // };
 
   useEffect(() => {
-    // if (searchParam.get('firstname') != null){
-    //   getData();
-    // }
+
     if (selectedStudent) {
       setId(selectedStudent.id);
       setfirstname(selectedStudent.FirstName);
@@ -118,22 +80,7 @@ function Form() {
       setShowUpdateButton(true);
     }
     else {
-      setId("");
-      setfirstname("");
-      setlastname("");
-      setfathername("");
-      setmothername("");
-      setcontactnumber("");
-      setaadharnumber("");
-      setstate("");
-      setcity("");
-      setcategory("");
-      setaddress("");
-      setuniversityname("");
-      setcoursename("");
-      setcoursesubject("");
-      settotalfee("");
-      setpaidamount("");
+      clearStudentState();
     }
   }, [selectedStudent])
 
@@ -484,8 +431,6 @@ function Form() {
               {/* ... (other additional information fields) */}
             </Grid>
             <Grid item xs={12}>
-              {/* <InputLabel htmlFor="attachment">Attachment</InputLabel>
-              <Input type="file" id="attachment" fullWidth /> */}
 
               <Button component="label" color="secondary" variant="contained" startIcon={<CloudUploadIcon />}>
                 Upload file
