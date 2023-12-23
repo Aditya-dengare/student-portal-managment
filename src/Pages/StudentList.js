@@ -13,6 +13,7 @@ import { database } from "../firebase";
 import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { useStudent } from "../StudentContext";
 import IconButton from '@mui/material/IconButton';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 function StudentList() {
 
@@ -148,6 +149,12 @@ function StudentList() {
       <Link to="/Form" className='studentlist_button'>
         <Button variant="contained" color="secondary" startIcon={<AddIcon />} onClick={handleClearStudent}>Add Student</Button>
       </Link>
+
+      <Link to="/Login" className="logout-button">
+          <Button variant="contained" color="secondary" startIcon={<LogoutIcon />}>
+            logout
+          </Button>
+        </Link>
 
       <Box sx={{ height: 400, width: '100%' }} className="student_list">
         <DataGrid

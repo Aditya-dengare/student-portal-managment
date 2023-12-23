@@ -7,8 +7,6 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import Input from '@mui/material/Input';
-import InputLabel from '@mui/material/InputLabel';
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -19,6 +17,7 @@ import { useStudent } from '../StudentContext';
 import { Alert, Snackbar, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 function Form() {
 
@@ -121,6 +120,7 @@ function Form() {
     clearStudentState();
     setShowSubmitAlertMessage(true);
     setOpen(true);
+
   }
 
   //This function is used to update Student Details
@@ -193,10 +193,19 @@ function Form() {
   return (
     <div className="background-container">
       <Container className="form-container">
-        <h1 className="displayname">Student Details</h1>
+        <div>
+          <h1 className="displayname">Student Form</h1>
+        </div>
+
         <Link to="/StudentList" className="student-list-link">
           <Button variant="contained" color="secondary" startIcon={<FormatListBulletedIcon />}>
             Student List
+          </Button>
+        </Link>
+
+        <Link to="/Login" className="logout-button">
+          <Button variant="contained" color="secondary" startIcon={<LogoutIcon />}>
+            logout
           </Button>
         </Link>
 
@@ -434,7 +443,7 @@ function Form() {
 
             <Grid item xs={12} md={6}>
               {!showUpdateButton ?
-                <Button variant="contained" color="primary" startIcon={<SaveIcon />} o fullWidth onClick={handleCreate}>Submit</Button> :
+                <Button variant="contained" color="primary" startIcon={<SaveIcon />} o fullWidth onClick={handleCreate} type='submit'>Submit</Button> :
                 <Button variant="contained" color="primary" startIcon={<EditIcon />} o fullWidth onClick={handleUpdate}>Update</Button>
               }
 

@@ -37,3 +37,7 @@
     border-radius: 10px; /* Optional: Adds rounded corners to the form */
     box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, 0.2); /* Shadow effect */
   }
+
+  .logout-button{
+    margin-left: 79%;
+  }
