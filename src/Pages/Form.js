@@ -443,7 +443,7 @@ function Form() {
 
             <Grid item xs={12} md={6}>
               {!showUpdateButton ?
-                <Button variant="contained" color="primary" startIcon={<SaveIcon />} o fullWidth onClick={handleCreate} type='submit'>Submit</Button> :
+                <Button variant="contained" color="primary" startIcon={<SaveIcon />} o fullWidth onClick={handleCreate}>Submit</Button> :
                 <Button variant="contained" color="primary" startIcon={<EditIcon />} o fullWidth onClick={handleUpdate}>Update</Button>
               }
 

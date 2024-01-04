@@ -10,7 +10,7 @@ function App() {
     <Router>
       <StudentProvider>
       <Routes>
-        <Route path='*' Component={SignUp}></Route>
+        <Route path='*' Component={Login}></Route>
         <Route path='/Form' element={<Form />} />
         <Route path='/studentlist' element={<StudentList />} />
         <Route path='/Login' element={<Login />} />
