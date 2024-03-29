@@ -43,10 +43,10 @@ function Login() {
     };
 
     return (
-        <StyledContainer component="main" maxWidth="xs">
+        <StyledContainer component="main" maxWidth="xl">
             <CssBaseline />
             <StyledPaper elevation={3}>
-                <h1>Student Portal SignUp</h1>
+                <h1>MAA ANANDINI EDUCATION</h1>
                 <form onSubmit={(e) => handleLogin(e)}>
                     <TextField
                         variant="outlined"

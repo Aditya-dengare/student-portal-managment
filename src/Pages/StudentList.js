@@ -81,7 +81,6 @@ function StudentList() {
       printWindow.document.close();
       printWindow.print();
     }
-
   };
 
   // This function will generate PDF for prints
@@ -92,15 +91,24 @@ function StudentList() {
           <title>Print Document</title>
           <!-- Add any CSS styles if needed -->
           <style>
-            /* Your styles here */
+            /* Centering the content */
+            .center {
+              text-align: center;
+            }
           </style>
         </head>
         <body>
           <!-- Your data rendering here -->
-          <div>
-            ${console.log(data.FirstName)}
-            <h1>FirstName: ${data.FirstName}</h1>
-            <p>LastName: ${data.LastName}</p>
+          <div class="center">
+            <h3>Print Receipt</h3>
+          </div>
+          <div class="center">
+            <p>Student Name: ${data.FirstName + data.LastName}</p>
+            <p>Course Name: ${data.CourseName.label}</p>
+            <p>Academic Year: ${data.AcademicYear}</p>
+            <p>Total Amount: ${data.TotalFee}</p>
+            <p>Paid Amount: ${data.PaidAmount}</p>
+            <p>Pending Amount: ${data.PendingAmount}</p>
           </div>
         </body>
       </html>
