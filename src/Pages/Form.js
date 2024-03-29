@@ -18,6 +18,10 @@ import { Alert, Snackbar, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateField } from '@mui/x-date-pickers/DateField';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 
 function Form() {
 
@@ -41,12 +45,16 @@ function Form() {
   const [courseduration, setcourseduration] = useState("");
   const [totalfee, settotalfee] = useState("");
   const [paidamount, setpaidamount] = useState("");
+  const [parentscontactnumber, setparentscontactnumber] = useState("");
+  const [dateofbirth, setdateofbirth] = useState("");
+  const[academicyear, setacademicyear] = useState("");
 
 
   const [showUpdateButton, setShowUpdateButton] = useState(false);
   const [showUpdateAlertMessage, setShowUpdateAlertMessage] = useState(false);
   const [showSubmitAlertMessage, setShowSubmitAlertMessage] = useState(false);
   const [open, setOpen] = React.useState(false);
+  const[error, setErrors] = useState({});
 
   const value = collection(database, DBName);
 
@@ -70,12 +78,95 @@ function Form() {
       setcoursesubject(selectedStudent.CourseSubject);
       settotalfee(selectedStudent.TotalFEE);
       setpaidamount(selectedStudent.PaidAmount);
+      setparentscontactnumber(selectedStudent.ParentsContactNumber);
+      setdateofbirth(selectedStudent.DateOfBirth);
+      setacademicyear(selectedStudent.AcademicYear);
       setShowUpdateButton(true);
     }
     else {
       clearStudentState();
     }
   }, [selectedStudent])
+
+  // This function is used to validate the form
+  const validateForm = () => {
+    const errors = {};
+
+    if (!firstname.trim()) {
+      errors.firstname = 'First name is required';
+    }
+
+    if (!lastname.trim()) {
+      errors.lastname = 'Last name is required';
+    }
+
+    if (!fathername.trim()) {
+      errors.fathername = "Father's name is required";
+    }
+
+    if (!mothername.trim()) {
+      errors.mothername = "Mother's name is required";
+    }
+
+    if (!contactnumber.trim()) {
+      errors.contactnumber = 'Contact number is required';
+    } else if (!/^\d{10}$/.test(contactnumber)) {
+      errors.contactnumber = 'Contact number must be 10 digits';
+    }
+
+    if (!aadharnumber.trim()) {
+      errors.aadharnumber = 'Aadhar number is required';
+    } else if (!/^\d{12}$/.test(aadharnumber)) {
+      errors.aadharnumber = 'Aadhar number must be 12 digits';
+    }
+
+    if (!state.trim()) {
+      errors.state = 'State is required';
+    }
+
+    if (!city.trim()) {
+      errors.city = 'City is required';
+    }
+
+    if (!address.trim()) {
+      errors.address = 'Address is required';
+    }
+
+    if (!category) {
+      errors.category = 'Category is required';
+    }
+
+    if (!universityname) {
+      errors.universityname = 'University name is required';
+    }
+
+    if (!coursename) {
+      errors.coursename = 'Course name is required';
+    }
+
+    if (!coursesubject.trim()) {
+      errors.coursesubject = 'Course subject is required';
+    }
+
+    if (!totalfee.trim()) {
+      errors.totalfee = 'Total fee is required';
+    }
+
+    if (!paidamount.trim()) {
+      errors.paidamount = 'Paid amount is required';
+    }
+    if (!parentscontactnumber.trim()) {
+      errors.parentscontactnumber = "Parent's contact number is required";
+    }
+    if (!dateofbirth.trim()) {
+      errors.dateofbirth = 'Date of birth is required';
+    }
+    if (!academicyear.trim()) {
+      errors.academicyear = 'Academic year is required';
+    }
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const Categories = [
     { label: 'General' },
@@ -95,33 +186,53 @@ function Form() {
     { label: 'B.COM' }
   ]
 
+  const handleDateOfBirthChange = (e) => {
+    let input = e.target.value;
+    // Remove non-numeric characters
+    input = input.replace(/\D/g, '');
+
+    // Insert "/" after the day and month inputs
+    if (input.length > 2 && input.charAt(2) !== '/') {
+      input = input.slice(0, 2) + '/' + input.slice(2);
+    }
+    if (input.length > 5 && input.charAt(5) !== '/') {
+      input = input.slice(0, 5) + '/' + input.slice(5);
+    }
+
+    setdateofbirth(input);
+  };
 
 
   //This function is used to Add Student Details
   const handleCreate = async () => {
-    await addDoc(value, {
-      FirstName: firstname,
-      LastName: lastname,
-      FatherName: fathername,
-      MotherName: mothername,
-      ContactNumber: contactnumber,
-      AadharNumber: aadharnumber,
-      State: state,
-      City: city,
-      Address: address,
-      Category: category,
-      UniversityName: universityname,
-      CourseName: coursename,
-      CourseSubject: coursesubject,
-      TotalFee: totalfee,
-      PaidAmount: paidamount,
-      PendingAmount: totalfee - paidamount
-    });
-    clearStudentState();
-    setShowSubmitAlertMessage(true);
-    setOpen(true);
-
-  }
+    const isValid = validateForm();
+    if (isValid) {
+      await addDoc(value, {
+        FirstName: firstname,
+        LastName: lastname,
+        FatherName: fathername,
+        MotherName: mothername,
+        ContactNumber: contactnumber,
+        AadharNumber: aadharnumber,
+        State: state,
+        City: city,
+        Address: address,
+        Category: category,
+        UniversityName: universityname,
+        CourseName: coursename,
+        CourseSubject: coursesubject,
+        TotalFee: totalfee,
+        PaidAmount: paidamount,
+        PendingAmount: totalfee - paidamount,
+        ParentsContactNumber: parentscontactnumber,
+        DateOfBirth: dateofbirth,
+        AcademicYear: academicyear
+      });
+      clearStudentState();
+      setShowSubmitAlertMessage(true);
+      setOpen(true);
+    }
+  };
 
   //This function is used to update Student Details
   const handleUpdate = async () => {
@@ -142,7 +253,10 @@ function Form() {
       CourseSubject: coursesubject,
       TotalFee: totalfee,
       PaidAmount: paidamount,
-      PendingAmount: totalfee - paidamount
+      PendingAmount: totalfee - paidamount,
+      ParentsContactNumber: parentscontactnumber,
+      DateOfBirth: dateofbirth,
+      AcademicYear: academicyear
     });
     clearStudentState();
     setShowUpdateAlertMessage(true);
@@ -176,6 +290,9 @@ function Form() {
     setcoursesubject("");
     settotalfee("");
     setpaidamount("");
+    setparentscontactnumber("");
+    setdateofbirth("");
+    setacademicyear("");
   }
 
   const VisuallyHiddenInput = styled('input')({
@@ -235,6 +352,7 @@ function Form() {
             <Grid item xs={12}>
               <h2>Personal Information</h2>
             </Grid>
+
             <Grid item xs={12} md={6}>
               <TextField
                 name="FirstName"
@@ -242,10 +360,13 @@ function Form() {
                 variant="outlined"
                 value={firstname}
                 onChange={(e) => setfirstname(e.target.value)}
+                error={!!error.firstname}
+                helperText={error.firstname}
                 fullWidth
                 required
               />
             </Grid>
+
             <Grid item xs={12} md={6}>
               <TextField
                 name="LastName"
@@ -253,11 +374,13 @@ function Form() {
                 variant="outlined"
                 value={lastname}
                 onChange={(e) => setlastname(e.target.value)}
+                error={!!error.lastname}
+                helperText={error.lastname}
                 fullWidth
                 required
               />
-
             </Grid>
+
             <Grid item xs={12} md={6}>
               <TextField
                 name="FatherName"
@@ -265,11 +388,13 @@ function Form() {
                 variant="outlined"
                 value={fathername}
                 onChange={(e) => setfathername(e.target.value)}
+                error={!!error.fathername}
+                helperText={error.fathername}
                 fullWidth
                 required
               />
-
             </Grid>
+
             <Grid item xs={12} md={6}>
               <TextField
                 name="MotherName"
@@ -277,11 +402,13 @@ function Form() {
                 variant="outlined"
                 value={mothername}
                 onChange={(e) => setmothername(e.target.value)}
+                error={!!error.mothername}
+                helperText={error.mothername}
                 fullWidth
                 required
               />
-
             </Grid>
+
             <Grid item xs={12} md={6}>
               <TextField
                 name="ContactNumber"
@@ -289,14 +416,54 @@ function Form() {
                 variant="outlined"
                 value={contactnumber}
                 onChange={(e) => setcontactnumber(e.target.value)}
+                error={!!error.contactnumber}
+                helperText={error.contactnumber}
                 fullWidth
                 required
               />
-
             </Grid>
+
+            <Grid item xs={12} md={6}>
+              <TextField
+                name="ParentsContactNumber"
+                label="Parents Contact Number"
+                variant="outlined"
+                value={parentscontactnumber}
+                onChange={(e) => setparentscontactnumber(e.target.value)}
+                error={!!error.parentscontactnumber}
+                helperText={error.parentscontactnumber}
+                fullWidth
+                required
+              />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <TextField
+                name="DateOfBirth"
+                label="Date Of Birth"
+                variant="outlined"
+                value={dateofbirth}
+                onChange={handleDateOfBirthChange}
+                error={!!error.dateofbirth}
+                helperText={error.dateofbirth}
+                placeholder="DD/MM/YYYY"
+                fullWidth
+                required
+              />
+            </Grid>
+
+            {/* <Grid item xs={12} md={6}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={['DateField']}>
+                  <DateField label="Date Of Birth" onChange={(e) => setdateofbirth(e.target.value)} />
+                </DemoContainer>
+              </LocalizationProvider>
+            </Grid> */}
+
             <Grid item xs={12}>
               <h2>Additional Information</h2>
             </Grid>
+
             <Grid item xs={12} md={6}>
               <TextField
                 name="AadharNumber"
@@ -304,11 +471,13 @@ function Form() {
                 variant="outlined"
                 value={aadharnumber}
                 onChange={(e) => setaadharnumber(e.target.value)}
+                error={!!error.aadharnumber}
+                helperText={error.aadharnumber}
                 fullWidth
                 required
               />
-
             </Grid>
+
             <Grid item xs={12} md={6}>
               <TextField
                 name="State"
@@ -316,11 +485,13 @@ function Form() {
                 variant="outlined"
                 value={state}
                 onChange={(e) => setstate(e.target.value)}
+                error={!!error.state}
+                helperText={error.state}
                 fullWidth
                 required
               />
-
             </Grid>
+
             <Grid item xs={12} md={6}>
               <TextField
                 name="City"
@@ -328,11 +499,13 @@ function Form() {
                 variant="outlined"
                 value={city}
                 onChange={(e) => setcity(e.target.value)}
+                error={!!error.city}
+                helperText={error.city}
                 fullWidth
                 required
               />
-
             </Grid>
+
             <Grid item xs={12} md={6}>
               <Autocomplete
                 disablePortal
@@ -343,8 +516,11 @@ function Form() {
                 renderInput={(params) => <TextField {...params} label="Category" />}
                 value={category}
                 onChange={(e, newValue) => setcategory(newValue)}
+                error={!!error.category}
+                helperText={error.category}
               />
             </Grid>
+
             <Grid item xs={12} md={6}>
               <TextField
                 name="Address"
@@ -354,6 +530,8 @@ function Form() {
                 multiline
                 value={address}
                 onChange={(e) => setaddress(e.target.value)}
+                error={!!error.address}
+                helperText={error.address}
                 rows={4}
                 required
               />
@@ -362,6 +540,7 @@ function Form() {
             <Grid item xs={12}>
               <h2>Educational Information</h2>
             </Grid>
+
             <Grid item xs={12} md={6}>
               <Autocomplete
                 disablePortal
@@ -372,6 +551,8 @@ function Form() {
                 renderInput={(params) => <TextField {...params} label="University Name" />}
                 value={universityname}
                 onChange={(e, newValue) => setuniversityname(newValue)}
+                error={!!error.universityname}
+                helperText={error.universityname}
               />
             </Grid>
 
@@ -385,6 +566,8 @@ function Form() {
                 renderInput={(params) => <TextField {...params} label="Course Name" />}
                 value={coursename}
                 onChange={(e, newValue) => setcoursename(newValue)}
+                error={!!error.coursename}
+                helperText={error.coursename}
               />
             </Grid>
 
@@ -396,16 +579,18 @@ function Form() {
                 fullWidth
                 value={coursesubject}
                 onChange={(e) => setcoursesubject(e.target.value)}
+                error={!!error.coursesubject}
+                helperText={error.coursesubject}
                 required
               />
             </Grid>
+
             <Grid item xs={12} md={6}>
               <TextField
                 name="CourseDuration"
                 label="Course Duration"
                 variant="outlined"
                 fullWidth
-              //required
               />
             </Grid>
 
@@ -416,11 +601,13 @@ function Form() {
                 variant="outlined"
                 value={totalfee}
                 onChange={(e) => settotalfee(e.target.value)}
+                error={!!error.totalfee}
+                helperText={error.totalfee}
                 fullWidth
                 required
               />
-
             </Grid>
+
             <Grid item xs={12} md={6}>
               <TextField
                 name="PaidAmount"
@@ -428,13 +615,28 @@ function Form() {
                 variant="outlined"
                 value={paidamount}
                 onChange={(e) => setpaidamount(e.target.value)}
+                error={!!error.paidamount}
+                helperText={error.paidamount}
                 fullWidth
                 required
               />
-              {/* ... (other additional information fields) */}
             </Grid>
-            <Grid item xs={12}>
 
+            <Grid item xs={12} md={6}>
+              <TextField
+                name="AcademicYear"
+                label="Academic Year"
+                variant="outlined"
+                value={academicyear}
+                onChange={(e) => setacademicyear(e.target.value)}
+                error={!!error.academicyear}
+                helperText={error.academicyear}
+                fullWidth
+                required
+              />
+            </Grid>
+
+            <Grid item xs={12}>
               <Button component="label" color="secondary" variant="contained" startIcon={<CloudUploadIcon />}>
                 Upload file
                 <VisuallyHiddenInput type="file" />
@@ -446,7 +648,6 @@ function Form() {
                 <Button variant="contained" color="primary" startIcon={<SaveIcon />} o fullWidth onClick={handleCreate}>Submit</Button> :
                 <Button variant="contained" color="primary" startIcon={<EditIcon />} o fullWidth onClick={handleUpdate}>Update</Button>
               }
-
             </Grid>
             <Grid item xs={12} md={6}>
               <Button variant="contained" color="error" startIcon={<RefreshIcon />} fullWidth type="reset">
@@ -459,7 +660,5 @@ function Form() {
     </div>
   );
 }
-
-
 
 export default Form;

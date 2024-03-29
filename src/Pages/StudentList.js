@@ -10,10 +10,11 @@ import { styled } from '@mui/system';
 import Box from '@mui/material/Box';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { database } from "../firebase";
-import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, getDocs } from "firebase/firestore";
 import { useStudent } from "../StudentContext";
 import IconButton from '@mui/material/IconButton';
 import LogoutIcon from '@mui/icons-material/Logout';
+import PrintIcon from '@mui/icons-material/Print';
 
 function StudentList() {
 
@@ -68,10 +69,48 @@ function StudentList() {
     window.location.reload();
   };
 
+  //This function will used to print the student results
+  const handlePrint = async (id) => {
+    const docRef = doc(database, DBName, id);
+    const getValueSnapshot = await getDoc(docRef);
+    if (getValueSnapshot.exists()) {
+      const getValue = getValueSnapshot.data();
+      const printWindow = window.open();
+      const contentToPrint = generatePrintContent(getValue);
+      printWindow.document.write(contentToPrint);
+      printWindow.document.close();
+      printWindow.print();
+    }
+
+  };
+
+  // This function will generate PDF for prints
+  const generatePrintContent = (data) => {
+    return `
+      <html>
+        <head>
+          <title>Print Document</title>
+          <!-- Add any CSS styles if needed -->
+          <style>
+            /* Your styles here */
+          </style>
+        </head>
+        <body>
+          <!-- Your data rendering here -->
+          <div>
+            ${console.log(data.FirstName)}
+            <h1>FirstName: ${data.FirstName}</h1>
+            <p>LastName: ${data.LastName}</p>
+          </div>
+        </body>
+      </html>
+    `;
+  };
+
   //This function is used to edit table data and move to Form.Js page
-  const handleEdit = async (id, FirstName, LastName, FatherName, MotherName, ContactNumber, AadharNumber, State, City, Category, Address, UniversityName, CourseName, CourseSubject, TotalFEE, PaidAmount) => {
+  const handleEdit = async (id, FirstName, LastName, FatherName, MotherName, ContactNumber, AadharNumber, State, City, Category, Address, UniversityName, CourseName, CourseSubject, TotalFEE, PaidAmount, ParentsContactNumber, DateOfBirth, AcademicYear) => {
     setStudent({
-      id, FirstName, LastName, FatherName, MotherName, ContactNumber, AadharNumber, State, City, Category, Address, UniversityName, CourseName, CourseSubject, TotalFEE, PaidAmount
+      id, FirstName, LastName, FatherName, MotherName, ContactNumber, AadharNumber, State, City, Category, Address, UniversityName, CourseName, CourseSubject, TotalFEE, PaidAmount, ParentsContactNumber, DateOfBirth, AcademicYear
     })
     navigate(`/Form`);
   }
@@ -93,10 +132,10 @@ function StudentList() {
       renderCell: (params) => (
         <>
           <IconButton color="primary" onClick={() => handleEdit(
-            params.row.firebaseindex, 
-            params.row.firstname, 
-            params.row.lastname, 
-            params.row.fathername, 
+            params.row.firebaseindex,
+            params.row.firstname,
+            params.row.lastname,
+            params.row.fathername,
             params.row.mothername,
             params.row.contactnumber,
             params.row.aadharnumber,
@@ -108,14 +147,19 @@ function StudentList() {
             params.row.courseName,
             params.row.coursesubject,
             params.row.totalFee,
-            params.row.paidAmount
-            )}>
+            params.row.paidAmount,
+            params.row.parentscontactnumber,
+            params.row.dateofbirth,
+            params.row.academicyear
+          )}>
             <EditIcon />
           </IconButton>
           <IconButton color="error" onClick={() => handleDelete(params.row.firebaseindex)}>
             <DeleteIcon />
           </IconButton>
-
+          <IconButton onClick={() => handlePrint(params.row.firebaseindex)}>
+            <PrintIcon />
+          </IconButton>
         </>
       ),
     },
@@ -141,6 +185,9 @@ function StudentList() {
     totalFee: values.TotalFee,
     paidAmount: values.PaidAmount,
     remainingAmount: values.PendingAmount,
+    parentscontactnumber: values.ParentsContactNumber,
+    dateofbirth: values.DateOfBirth,
+    academicyear: values.AcademicYear
   }));
 
   return (
@@ -151,10 +198,10 @@ function StudentList() {
       </Link>
 
       <Link to="/Login" className="logout-button">
-          <Button variant="contained" color="secondary" startIcon={<LogoutIcon />}>
-            logout
-          </Button>
-        </Link>
+        <Button variant="contained" color="secondary" startIcon={<LogoutIcon />}>
+          logout
+        </Button>
+      </Link>
 
       <Box sx={{ height: 400, width: '100%' }} className="student_list">
         <DataGrid
