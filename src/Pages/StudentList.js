@@ -86,32 +86,90 @@ function StudentList() {
   // This function will generate PDF for prints
   const generatePrintContent = (data) => {
     return `
-      <html>
-        <head>
-          <title>Print Document</title>
-          <!-- Add any CSS styles if needed -->
-          <style>
-            /* Centering the content */
-            .center {
-              text-align: center;
-            }
-          </style>
-        </head>
-        <body>
-          <!-- Your data rendering here -->
-          <div class="center">
-            <h3>Print Receipt</h3>
-          </div>
-          <div class="center">
-            <p>Student Name: ${data.FirstName + data.LastName}</p>
-            <p>Course Name: ${data.CourseName.label}</p>
-            <p>Academic Year: ${data.AcademicYear}</p>
-            <p>Total Amount: ${data.TotalFee}</p>
-            <p>Paid Amount: ${data.PaidAmount}</p>
-            <p>Pending Amount: ${data.PendingAmount}</p>
-          </div>
-        </body>
-      </html>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maa Anandini Education</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      margin-top: 50px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid black;
+      padding: 3px;
+      text-align: left;
+    }
+    th.input-label {
+      width: 30%;
+      padding: 10px;
+    }
+    p {
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 style="text-align:center">MAA ANANDINI EDUCATION</h1>
+    <p style="text-align:center">Our Aim Your Education</p>
+    
+    <table>
+      <tr>
+        <th class="input-label">Student Name</th>
+        <td><p>${data.FirstName} ${data.LastName}</p></td>
+      </tr>
+      <tr>
+        <th class="input-label">Course Name</th>
+        <td><p>${data.CourseName.label}</p></td>
+      </tr>
+      <tr>
+        <th class="input-label">Academic Year</th>
+        <td><p>${data.AcademicYear}</p></td>
+      </tr>
+      <tr>
+        <th class="input-label">Total Amount</th>
+        <td><p>${data.TotalFee}</p></td>
+      </tr>
+      <tr>
+        <th class="input-label">Pending Amount</th>
+        <td><p>${data.PendingAmount}</p></td>
+      </tr>
+    </table>
+
+    <div>
+      <p>
+        <b>Address:</b>
+        <br />
+        M.G Road, Street No. 4, Nr. Ramji Mandir,
+        <br />
+        Opp. of Ashok Medical Store, Jamnagar - 361001
+        <br />
+        Semapure: 0288 - 2552001, Mo.: 9375939339 / 8104003383
+        <br />
+        Mail Id: maaanandineducation@gmail.com
+      </p>
+      <p><b>NOTE:</b> All Fees once paid shall not be refunded under any circumstance.</p>
+    </div>
+  </div>
+</body>
+<script>
+    var courseNameElement = document.getElementById('courseName');
+    if (data.CourseName.label !== null) {
+        courseNameElement.textContent = data.CourseName.label;
+    } else {
+        courseNameElement.textContent = data.CourseName;
+    }
+  </script>
+</html>
     `;
   };
 

@@ -587,10 +587,15 @@ function Form() {
 
             <Grid item xs={12} md={6}>
               <TextField
-                name="CourseDuration"
-                label="Course Duration"
+                name="AcademicYear"
+                label="Academic Year"
                 variant="outlined"
+                value={academicyear}
+                onChange={(e) => setacademicyear(e.target.value)}
+                error={!!error.academicyear}
+                helperText={error.academicyear}
                 fullWidth
+                required
               />
             </Grid>
 
@@ -617,20 +622,6 @@ function Form() {
                 onChange={(e) => setpaidamount(e.target.value)}
                 error={!!error.paidamount}
                 helperText={error.paidamount}
-                fullWidth
-                required
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField
-                name="AcademicYear"
-                label="Academic Year"
-                variant="outlined"
-                value={academicyear}
-                onChange={(e) => setacademicyear(e.target.value)}
-                error={!!error.academicyear}
-                helperText={error.academicyear}
                 fullWidth
                 required
               />
