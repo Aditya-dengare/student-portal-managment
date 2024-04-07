@@ -115,6 +115,10 @@ function StudentList() {
     p {
       padding: 10px;
     }
+    input[type="checkbox"] {
+      display: inline-block;
+      margin-right: 10px;
+    }
   </style>
 </head>
 <body>
@@ -144,6 +148,16 @@ function StudentList() {
         <td><p>${data.PendingAmount}</p></td>
       </tr>
     </table>
+
+    <div>
+      <p>Payment Type:</p>
+      <input type="checkbox" id="cash" name="paymentType" value="Cash">
+      <label for="cash">Cash</label>
+      <input type="checkbox" id="cheque" name="paymentType" value="Cheque">
+      <label for="cheque">Cheque</label>
+      <input type="checkbox" id="upi" name="paymentType" value="UPI">
+      <label for="upi">UPI</label>
+    </div>
 
     <div>
       <p>
