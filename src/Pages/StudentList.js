@@ -133,7 +133,7 @@ function StudentList() {
       </tr>
       <tr>
         <th class="input-label">Course Name</th>
-        <td><p>${data.CourseName.label}</p></td>
+        <td><p>${data.CourseName.label || data.CourseName}</p></td>
       </tr>
       <tr>
         <th class="input-label">Academic Year</th>
