@@ -18,10 +18,6 @@ import { Alert, Snackbar, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DateField } from '@mui/x-date-pickers/DateField';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 
 function Form() {
 
@@ -47,14 +43,15 @@ function Form() {
   const [paidamount, setpaidamount] = useState("");
   const [parentscontactnumber, setparentscontactnumber] = useState("");
   const [dateofbirth, setdateofbirth] = useState("");
-  const[academicyear, setacademicyear] = useState("");
+  const [academicyear, setacademicyear] = useState("");
+  const [numbers, setnumbers] = useState("");
 
 
   const [showUpdateButton, setShowUpdateButton] = useState(false);
   const [showUpdateAlertMessage, setShowUpdateAlertMessage] = useState(false);
   const [showSubmitAlertMessage, setShowSubmitAlertMessage] = useState(false);
   const [open, setOpen] = React.useState(false);
-  const[error, setErrors] = useState({});
+  const [error, setErrors] = useState({});
 
   const value = collection(database, DBName);
 
@@ -183,8 +180,11 @@ function Form() {
   const Courses = [
     { label: 'B.Tech' },
     { label: 'MCA' },
-    { label: 'B.COM' }
+    { label: 'B.COM' },
+    { label: 'BA' }
   ]
+
+  const Numbers = Array.from({ length: 13 }, (_, i) => String(i + 1));
 
   const handleDateOfBirthChange = (e) => {
     let input = e.target.value;
@@ -570,6 +570,23 @@ function Form() {
                 helperText={error.coursename}
               />
             </Grid>
+
+            
+            <Grid item xs={12} md={6}>
+              <Autocomplete
+                disablePortal
+                id="combo-box-number"
+                name="1to13"
+                options={Numbers}
+                sx={{ width: '100%' }}
+                renderInput={(params) => <TextField {...params} label="Select Number From 1 to 13" />}
+                value={numbers}
+                onChange={(e, newValue) => setnumbers(newValue)}
+                error={!!error.numbers}
+                helperText={error.numbers}
+              />
+            </Grid>
+
 
             <Grid item xs={12} md={6}>
               <TextField
