@@ -10,7 +10,7 @@ import TextField from '@mui/material/TextField';
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import { database } from "../firebase"
+import { database, storage } from "../firebase"
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { useLocation, useParams } from 'react-router-dom';
 import { useStudent } from '../StudentContext';
@@ -45,6 +45,7 @@ function Form() {
   const [dateofbirth, setdateofbirth] = useState("");
   const [academicyear, setacademicyear] = useState("");
   const [numbers, setnumbers] = useState("");
+  const [photo, setPhoto] = useState(null);
 
 
   const [showUpdateButton, setShowUpdateButton] = useState(false);
@@ -186,6 +187,12 @@ function Form() {
 
   const Numbers = Array.from({ length: 13 }, (_, i) => String(i + 1));
 
+  const handlePhotoChange = (e) => {
+    if (e.target.files.length) {
+      setPhoto(e.target.files[0]);
+    }
+  };
+
   const handleDateOfBirthChange = (e) => {
     let input = e.target.value;
     // Remove non-numeric characters
@@ -207,7 +214,7 @@ function Form() {
   const handleCreate = async () => {
     const isValid = validateForm();
     if (isValid) {
-      await addDoc(value, {
+      const docRef = await addDoc(value, {
         FirstName: firstname,
         LastName: lastname,
         FatherName: fathername,
@@ -228,6 +235,15 @@ function Form() {
         DateOfBirth: dateofbirth,
         AcademicYear: academicyear
       });
+      if (photo) {
+        const photoPath = `gs://student-management-58df4.appspot.com/${docRef.id}`;
+        const photoRef = storage.ref().child(photoPath);
+        await photoRef.put(photo);
+        const photoURL = await photoRef.getDownloadURL();
+        await updateDoc(docRef, {
+          PhotoURL: photoURL
+        });
+      }
       clearStudentState();
       setShowSubmitAlertMessage(true);
       setOpen(true);
@@ -571,7 +587,7 @@ function Form() {
               />
             </Grid>
 
-            
+
             <Grid item xs={12} md={6}>
               <Autocomplete
                 disablePortal
@@ -646,8 +662,8 @@ function Form() {
 
             <Grid item xs={12}>
               <Button component="label" color="secondary" variant="contained" startIcon={<CloudUploadIcon />}>
-                Upload file
-                <VisuallyHiddenInput type="file" />
+                Upload Your Photo
+                <input type="file" hidden onChange={handlePhotoChange} />
               </Button>
             </Grid>
 
