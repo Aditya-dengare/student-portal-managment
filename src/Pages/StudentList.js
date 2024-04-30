@@ -85,13 +85,20 @@ function StudentList() {
 
   // This function will generate PDF for prints
   const generatePrintContent = (data) => {
+    // Get current date
+    const currentDate = new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
     return `
     <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Maa Anandini Education</title>
+  <title>Maa Anandini Education Bill</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -119,9 +126,15 @@ function StudentList() {
       display: inline-block;
       margin-right: 10px;
     }
+    .date {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
   </style>
 </head>
 <body>
+  <div class="date">Bill Date: ${currentDate}</div>
   <div class="container">
     <h1 style="text-align:center">MAA ANANDINI EDUCATION</h1>
     <p style="text-align:center">Our Aim Your Education</p>
