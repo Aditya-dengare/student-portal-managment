@@ -44,7 +44,7 @@ function Form() {
   const [parentscontactnumber, setparentscontactnumber] = useState("");
   const [dateofbirth, setdateofbirth] = useState("");
   const [academicyear, setacademicyear] = useState("");
-  const [numbers, setnumbers] = useState("");
+  const [banumbers, setbanumbers] = useState("");
   const [photo, setPhoto] = useState(null);
 
 
@@ -53,10 +53,20 @@ function Form() {
   const [showSubmitAlertMessage, setShowSubmitAlertMessage] = useState(false);
   const [open, setOpen] = React.useState(false);
   const [error, setErrors] = useState({});
+  const [showNumberInput, setShowNumberInput] = useState(false);
 
   const value = collection(database, DBName);
 
   const location = useLocation();
+
+  useEffect(() => {
+    if (coursename && coursename.label === 'BA') {
+      setShowNumberInput(true);
+    } else {
+      setShowNumberInput(false);
+      setbanumbers("");
+    }
+  }, [coursename]);
 
   useEffect(() => {
     if (selectedStudent) {
@@ -233,7 +243,8 @@ function Form() {
         PendingAmount: totalfee - paidamount,
         ParentsContactNumber: parentscontactnumber,
         DateOfBirth: dateofbirth,
-        AcademicYear: academicyear
+        AcademicYear: academicyear,
+        Numbers: banumbers
       });
       if (photo) {
         const photoPath = `gs://student-management-58df4.appspot.com/${docRef.id}`;
@@ -272,7 +283,8 @@ function Form() {
       PendingAmount: totalfee - paidamount,
       ParentsContactNumber: parentscontactnumber,
       DateOfBirth: dateofbirth,
-      AcademicYear: academicyear
+      AcademicYear: academicyear,
+      Numbers: banumbers
     });
     clearStudentState();
     setShowUpdateAlertMessage(true);
@@ -588,20 +600,22 @@ function Form() {
             </Grid>
 
 
-            <Grid item xs={12} md={6}>
-              <Autocomplete
-                disablePortal
-                id="combo-box-number"
-                name="1to13"
-                options={Numbers}
-                sx={{ width: '100%' }}
-                renderInput={(params) => <TextField {...params} label="Select Number From 1 to 13" />}
-                value={numbers}
-                onChange={(e, newValue) => setnumbers(newValue)}
-                error={!!error.numbers}
-                helperText={error.numbers}
-              />
-            </Grid>
+            {showNumberInput && (
+              <Grid item xs={12} md={6}>
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-number"
+                  name="1to13"
+                  options={Numbers}
+                  sx={{ width: '100%' }}
+                  renderInput={(params) => <TextField {...params} label="Select Number From 1 to 13" />}
+                  value={banumbers}
+                  onChange={(e, newValue) => setbanumbers(newValue)}
+                  error={!!error.banumbers}
+                  helperText={error.banumbers}
+                />
+              </Grid>
+            )}
 
 
             <Grid item xs={12} md={6}>
