@@ -153,13 +153,9 @@ function StudentList() {
         <td><p>${data.AcademicYear}</p></td>
       </tr>
       <tr>
-        <th class="input-label">Total Amount</th>
-        <td><p>${data.TotalFee}</p></td>
-      </tr>
-      <tr>
-        <th class="input-label">Pending Amount</th>
-        <td><p>${data.PendingAmount}</p></td>
-      </tr>
+        <th class="input-label">Paid Amount</th>
+        <td><p>${data.PaidAmount}</p></td>
+      </tr>    
     </table>
 
     <div>
