@@ -12,6 +12,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { database, storage } from "../firebase"
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { useLocation, useParams } from 'react-router-dom';
 import { useStudent } from '../StudentContext';
 import { Alert, Snackbar, Stack } from '@mui/material';
@@ -247,13 +248,17 @@ function Form() {
         Numbers: banumbers
       });
       if (photo) {
-        const photoPath = `gs://student-management-58df4.appspot.com/${docRef.id}`;
-        const photoRef = storage.ref().child(photoPath);
-        await photoRef.put(photo);
-        const photoURL = await photoRef.getDownloadURL();
-        await updateDoc(docRef, {
-          PhotoURL: photoURL
+        const photoPath = `profile_photos/${docRef.id}`;
+        const photoRef = ref(storage, photoPath);
+        const photoURL =  await uploadBytes(photoRef, photo).then((snapshot) => {
+          console.log('Uploaded a blob or file!', snapshot.ref);
+          return getDownloadURL(snapshot.ref);
         });
+        console.log('URL',photoURL, photoRef.fullPath);
+        await updateDoc(docRef, {
+          PhotoURL: photoURL,
+          PhotoRefPath: photoRef.fullPath
+      });
       }
       clearStudentState();
       setShowSubmitAlertMessage(true);
@@ -679,6 +684,7 @@ function Form() {
                 Upload Your Photo
                 <input type="file" hidden onChange={handlePhotoChange} />
               </Button>
+              { photo && <p>Selected photo: {photo.name}</p> }
             </Grid>
 
             <Grid item xs={12} md={6}>

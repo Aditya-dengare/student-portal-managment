@@ -85,7 +85,6 @@ function StudentList() {
 
   // This function will generate PDF for prints
   const generatePrintContent = (data) => {
-    // Get current date
     const currentDate = new Date().toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
@@ -208,10 +207,10 @@ function StudentList() {
     clearStudent();
   };
   const columns = [
-    { field: 'name', headerName: 'Name', width: 300 },
-    { field: 'universityName', headerName: 'University Name', width: 300 },
-    { field: 'courseName', headerName: 'Course Name', width: 250 },
-    { field: 'totalFee', headerName: 'Total Fee', width: 130 },
+    { field: 'name', headerName: 'Name', width: 200 },
+    { field: 'universityName', headerName: 'University Name', width: 200 },
+    { field: 'courseName', headerName: 'Course Name', width: 200 },
+    { field: 'totalFee', headerName: 'Total Fee', width: 200 },
     { field: 'paidAmount', headerName: 'Paid Amount', width: 200 },
     { field: 'remainingAmount', headerName: 'Remaining Amount', width: 200 },
     {
@@ -280,7 +279,7 @@ function StudentList() {
   }));
 
   return (
-    <div>
+    <div style={{height:"1vh"}}>
       <h1 className='displayname'>Student List</h1>
       <Link to="/Form" className='studentlist_button'>
         <Button variant="contained" color="secondary" startIcon={<AddIcon />} onClick={handleClearStudent}>Add Student</Button>
@@ -292,13 +291,14 @@ function StudentList() {
         </Button>
       </Link>
 
-      <Box sx={{ height: 400, width: '100%' }} className="student_list">
+      <Box sx={{ flex: 1, width: 'auto' }} className="student_list">
         <DataGrid
-          rows={rows}
+          rows = {rows}
           disableColumnFilter
           disableColumnSelector
           disableDensitySelector
-          columns={columns}
+          disableRowSelectionOnClick
+          columns = {columns}
           slots={{ toolbar: GridToolbar }}
           slotProps={{
             toolbar: {
