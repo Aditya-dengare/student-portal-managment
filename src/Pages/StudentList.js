@@ -196,9 +196,9 @@ function StudentList() {
   };
 
   //This function is used to edit table data and move to Form.Js page
-  const handleEdit = async (id, FirstName, LastName, FatherName, MotherName, ContactNumber, AadharNumber, State, City, Category, Address, UniversityName, CourseName, CourseSubject, TotalFEE, PaidAmount, ParentsContactNumber, DateOfBirth, AcademicYear) => {
+  const handleEdit = async (id, FirstName, LastName, FatherName, MotherName, ContactNumber, AadharNumber, State, City, Category, Address, UniversityName, CourseName, CourseSubject, TotalFEE, PaidAmount, ParentsContactNumber, DateOfBirth, AcademicYear,PhotoURL) => {
     setStudent({
-      id, FirstName, LastName, FatherName, MotherName, ContactNumber, AadharNumber, State, City, Category, Address, UniversityName, CourseName, CourseSubject, TotalFEE, PaidAmount, ParentsContactNumber, DateOfBirth, AcademicYear
+      id, FirstName, LastName, FatherName, MotherName, ContactNumber, AadharNumber, State, City, Category, Address, UniversityName, CourseName, CourseSubject, TotalFEE, PaidAmount, ParentsContactNumber, DateOfBirth, AcademicYear,PhotoURL
     })
     navigate(`/Form`);
   }
@@ -238,7 +238,8 @@ function StudentList() {
             params.row.paidAmount,
             params.row.parentscontactnumber,
             params.row.dateofbirth,
-            params.row.academicyear
+            params.row.academicyear,
+            params.row.photoURL
           )}>
             <EditIcon />
           </IconButton>
@@ -275,7 +276,8 @@ function StudentList() {
     remainingAmount: values.PendingAmount,
     parentscontactnumber: values.ParentsContactNumber,
     dateofbirth: values.DateOfBirth,
-    academicyear: values.AcademicYear
+    academicyear: values.AcademicYear,
+    photoURL: values.PhotoURL || '', // Ensure photoURL is defined
   }));
 
   return (

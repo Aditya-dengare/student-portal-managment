@@ -1,27 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import './Form.css';
-import Button from '@mui/material/Button';
-import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
-import { Link } from 'react-router-dom';
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
-import SaveIcon from '@mui/icons-material/Save';
-import EditIcon from '@mui/icons-material/Edit';
-import RefreshIcon from '@mui/icons-material/Refresh';
-import { database, storage } from "../firebase"
-import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { useLocation, useParams } from 'react-router-dom';
-import { useStudent } from '../StudentContext';
-import { Alert, Snackbar, Stack } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import LogoutIcon from '@mui/icons-material/Logout';
+import React, { useEffect, useState } from "react";
+import "./Form.css";
+import Button from "@mui/material/Button";
+import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
+import { Link } from "react-router-dom";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
+import SaveIcon from "@mui/icons-material/Save";
+import EditIcon from "@mui/icons-material/Edit";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import { database, storage } from "../firebase";
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { useLocation, useParams } from "react-router-dom";
+import { useStudent } from "../StudentContext";
+import { Alert, Snackbar, Stack } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 function Form() {
-
   const DBName = "StudentData";
 
   const { selectedStudent, setStudent } = useStudent();
@@ -47,7 +46,7 @@ function Form() {
   const [academicyear, setacademicyear] = useState("");
   const [banumbers, setbanumbers] = useState("");
   const [photo, setPhoto] = useState(null);
-
+  const [photoURL, setPhotoURL] = useState("");
 
   const [showUpdateButton, setShowUpdateButton] = useState(false);
   const [showUpdateAlertMessage, setShowUpdateAlertMessage] = useState(false);
@@ -61,7 +60,7 @@ function Form() {
   const location = useLocation();
 
   useEffect(() => {
-    if (coursename && coursename.label === 'BA') {
+    if (coursename && coursename.label === "BA") {
       setShowNumberInput(true);
     } else {
       setShowNumberInput(false);
@@ -71,6 +70,7 @@ function Form() {
 
   useEffect(() => {
     if (selectedStudent) {
+      console.log("Selected Student Object:", selectedStudent); // Debugging
       setId(selectedStudent.id);
       setfirstname(selectedStudent.FirstName);
       setlastname(selectedStudent.LastName);
@@ -90,23 +90,24 @@ function Form() {
       setparentscontactnumber(selectedStudent.ParentsContactNumber);
       setdateofbirth(selectedStudent.DateOfBirth);
       setacademicyear(selectedStudent.AcademicYear);
+      setPhotoURL(selectedStudent.PhotoURL); // Set the photo URL
+      console.log("PhotoURL from selectedStudent:", selectedStudent.PhotoURL); // Debugging
       setShowUpdateButton(true);
-    }
-    else {
+    } else {
       clearStudentState();
     }
-  }, [selectedStudent])
+  }, [selectedStudent]);
 
   // This function is used to validate the form
   const validateForm = () => {
     const errors = {};
 
     if (!firstname.trim()) {
-      errors.firstname = 'First name is required';
+      errors.firstname = "First name is required";
     }
 
     if (!lastname.trim()) {
-      errors.lastname = 'Last name is required';
+      errors.lastname = "Last name is required";
     }
 
     if (!fathername.trim()) {
@@ -118,155 +119,180 @@ function Form() {
     }
 
     if (!contactnumber.trim()) {
-      errors.contactnumber = 'Contact number is required';
+      errors.contactnumber = "Contact number is required";
     } else if (!/^\d{10}$/.test(contactnumber)) {
-      errors.contactnumber = 'Contact number must be 10 digits';
+      errors.contactnumber = "Contact number must be 10 digits";
     }
 
     if (!aadharnumber.trim()) {
-      errors.aadharnumber = 'Aadhar number is required';
+      errors.aadharnumber = "Aadhar number is required";
     } else if (!/^\d{12}$/.test(aadharnumber)) {
-      errors.aadharnumber = 'Aadhar number must be 12 digits';
+      errors.aadharnumber = "Aadhar number must be 12 digits";
     }
 
     if (!state.trim()) {
-      errors.state = 'State is required';
+      errors.state = "State is required";
     }
 
     if (!city.trim()) {
-      errors.city = 'City is required';
+      errors.city = "City is required";
     }
 
     if (!address.trim()) {
-      errors.address = 'Address is required';
+      errors.address = "Address is required";
     }
 
     if (!category) {
-      errors.category = 'Category is required';
+      errors.category = "Category is required";
     }
 
     if (!universityname) {
-      errors.universityname = 'University name is required';
+      errors.universityname = "University name is required";
     }
 
     if (!coursename) {
-      errors.coursename = 'Course name is required';
+      errors.coursename = "Course name is required";
     }
 
     if (!coursesubject.trim()) {
-      errors.coursesubject = 'Course subject is required';
+      errors.coursesubject = "Course subject is required";
     }
 
     if (!totalfee.trim()) {
-      errors.totalfee = 'Total fee is required';
+      errors.totalfee = "Total fee is required";
     }
 
     if (!paidamount.trim()) {
-      errors.paidamount = 'Paid amount is required';
+      errors.paidamount = "Paid amount is required";
     }
     if (!parentscontactnumber.trim()) {
       errors.parentscontactnumber = "Parent's contact number is required";
     }
     if (!dateofbirth.trim()) {
-      errors.dateofbirth = 'Date of birth is required';
+      errors.dateofbirth = "Date of birth is required";
     }
     if (!academicyear.trim()) {
-      errors.academicyear = 'Academic year is required';
+      errors.academicyear = "Academic year is required";
     }
     setErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
   const Categories = [
-    { label: 'General' },
-    { label: 'SC/ST' },
-    { label: 'OTHER' }
-  ]
+    { label: "General" },
+    { label: "SC/ST" },
+    { label: "OTHER" },
+  ];
 
   const UniversityNames = [
-    { label: 'LJ Institute' },
-    { label: 'RK University' },
-    { label: 'Parul University' },
-    {label :'Surendranagr University'}
-  ]
+    { label: "LJ Institute" },
+    { label: "RK University" },
+    { label: "Parul University" },
+    { label: "Surendranagr University" },
+  ];
 
   const Courses = [
-    { label: 'B.Tech' },
-    { label: 'MCA' },
-    { label: 'B.COM' },
-    { label: 'BA' },
-    { label: 'Diploma Engineering - Civil' },
-    { label: 'Diploma Engineering - Computer' },
-    { label: 'Diploma Engineering - Electrical' },
-    { label: 'Diploma Engineering - Information Technology' },
-    { label: 'Diploma Engineering - Mechanical' },
-    { label: 'Bachelor of Arts (B. A.)' },
-    { label: 'Bachelor in Social Work (B. S. W.)' },
-    { label: 'Bachelor of Commerce (B. Com)' },
-    { label: 'Bachelor of Business Administration (BBA)' },
-    { label: 'Bachelor of Computer Applications (BCA)' },
-    { label: 'Bachelor of Science (B. Sc.)' },
-    { label: 'Bachelor of Science in Information Technology (B. Sc. IT)' },
-    { label: 'Bachelor of Science (Fire & Safety)' },
-    { label: 'Bachelor of Library Science (B.Lib)' },
-    { label: 'Bachelor of Vocational Training (Patient Care Mgt & Computer & Hardware)' },
-    { label: 'B. Tech - Civil' },
-    { label: 'B. Tech - Computer' },
-    { label: 'B. Tech - Electrical' },
-    { label: 'B. Tech - Information Technology' },
-    { label: 'B. Tech - Mechanical' },
-    { label: 'Post Graduate Diploma in Marketing (PGDM)' },
-    { label: 'Post Graduate Diploma in Finance (PGDF)' },
-    { label: 'Post Graduate Diploma in Human Resource (PGDHR)' },
-    { label: 'Post Graduate Diploma in Business Administration (PGDBA)' },
-    { label: 'Post Graduate Diploma in Computer Applications (PGDCA)' },
-    { label: 'Master of Arts (M. A.)' },
-    { label: 'Master in Social Work (M. S. W.)' },
-    { label: 'Master of Commerce (M. Com)' },
-    { label: 'Master in Business Administration (MBA)' },
-    { label: 'Master of Science (M. Sc.)' },
-    { label: 'Master of Library Science (M. Lib)' },
-    { label: 'Master of Science in Information Technology (M. Sc. IT)' },
-    { label: 'Post Graduate Diploma in Marketing (PGDM) (2 Year)' },
-    { label: 'Master of Computer Application (MCA)' },
-    { label: 'Master of Science (M.SC-MLT)' },
-    { label: 'M. Tech - Civil - Structure Engineering' },
-    { label: 'M. Tech - Computer - Artificial Intelligence' },
-    { label: 'M. Tech - Computer - Software Engineering' },
-    { label: 'M. Tech - Electrical - Power System Engineering' },
-    { label: 'M. Tech - Mechanical - CAD / CAM' },
-    { label: 'Doctor of Philosophy (Ph. D.)' },
-    { label: 'Certificate Program for Course on Computer Concept (CCC)' },
-    { label: 'Certificate Program on CNC Machine Operator' },
-    { label: 'Certificate Program on Assembly and Servicing of Domestic Refrigerator' },
-    { label: 'Certificate Program on Installation and Servicing of Split Air Conditioner' },
-    { label: 'Certificate Program on Solar Panel Roof Top Installation and Servicing' },
-    { label: 'Certificate Program in Piping Design' },
-    { label: 'Certificate Program in Welding Technology (SMAW, TIG, MIG & Gas Welding, Cutting & Spot Welding Machines)' },
-    { label: 'Certificate Program in Plumbing & Sanitation' },
-    { label: 'Certificate Program in Wiring, Installation And Maintenance of Electrical System' },
-    { label: 'Certificate Program in Front Office Operation' },
-    { label: 'Certificate Program in Office Administration' },
-    { label: 'Certificate Program in Fire Technology' },
-    { label: 'Certificate Program in Medical Lab Technology' },
-    { label: 'Certificate Program in Public Relations' },
-    { label: 'Certificate Program in Journalism' },
-    { label: 'Certificate Program in C T Scan and MRI Tech.' },
-    { label: 'Certificate Program in Smart TV Repairing' },
-    { label: 'Certificate Program for Mobile Phone Repairing' },
-    { label: 'Certificate Program for Fireman' },
-    { label: 'Computer Aided Textile Designing (CATD)' },
-    { label: 'Computer Aided Fashion Designing' },
-    { label: 'Clothing and Fashion Technology (CFT)' },
-    { label: 'Training in Value Addition Technology & Fashion Clothing' },
-    { label: 'Handloom and Textile Technology' },
-    {label: 'Diploma in Health & Sanitary Inspector' },
-    { label: 'Diploma in Multimedia Animation VFX' },
-    { label: 'Diploma in Interior Design' },
-    { label: 'Diploma in Fashion Design' },
-    { label: 'Diploma in Hardware and Networking' }
-  
-  ]
+    { label: "ANM" },
+    { label: "B.Tech" },
+    { label: "B.S.C Nursing" },
+    { label: "MCA" },
+    { label: "B.COM" },
+    { label: "BA" },
+    { label: "Diploma Engineering - Civil" },
+    { label: "Diploma Engineering - Computer" },
+    { label: "Diploma Engineering - Electrical" },
+    { label: "Diploma Engineering - Information Technology" },
+    { label: "Diploma Engineering - Mechanical" },
+    { label: "Bachelor of Arts (B. A.)" },
+    { label: "Bachelor in Social Work (B. S. W.)" },
+    { label: "Bachelor of Commerce (B. Com)" },
+    { label: "Bachelor of Business Administration (BBA)" },
+    { label: "Bachelor of Computer Applications (BCA)" },
+    { label: "Bachelor of Science (B. Sc.)" },
+    { label: "Bachelor of Science in Information Technology (B. Sc. IT)" },
+    { label: "Bachelor of Science (Fire & Safety)" },
+    { label: "Bachelor of Library Science (B.Lib)" },
+    {
+      label:
+        "Bachelor of Vocational Training (Patient Care Mgt & Computer & Hardware)",
+    },
+    { label: "B.Tech - Civil" },
+    { label: "B.Tech - Computer" },
+    { label: "B.Tech - Electrical" },
+    { label: "B.Tech - Information Technology" },
+    { label: "B.Tech - Mechanical" },
+    { label: "Post Graduate Diploma in Marketing (PGDM)" },
+    { label: "Post Graduate Diploma in Finance (PGDF)" },
+    { label: "Post Graduate Diploma in Human Resource (PGDHR)" },
+    { label: "Post Graduate Diploma in Business Administration (PGDBA)" },
+    { label: "Post Graduate Diploma in Computer Applications (PGDCA)" },
+    { label: "Master of Arts (M. A.)" },
+    { label: "Master in Social Work (M. S. W.)" },
+    { label: "Master of Commerce (M. Com)" },
+    { label: "Master in Business Administration (MBA)" },
+    { label: "Master of Science (M. Sc.)" },
+    { label: "Master of Library Science (M. Lib)" },
+    { label: "Master of Science in Information Technology (M. Sc. IT)" },
+    { label: "Post Graduate Diploma in Marketing (PGDM) (2 Year)" },
+    { label: "Master of Computer Application (MCA)" },
+    { label: "Master of Science (M.SC-MLT)" },
+    { label: "M. Tech - Civil - Structure Engineering" },
+    { label: "M. Tech - Computer - Artificial Intelligence" },
+    { label: "M. Tech - Computer - Software Engineering" },
+    { label: "M. Tech - Electrical - Power System Engineering" },
+    { label: "M. Tech - Mechanical - CAD / CAM" },
+    { label: "Doctor of Philosophy (Ph. D.)" },
+    { label: "Certificate Program for Course on Computer Concept (CCC)" },
+    { label: "Certificate Program on CNC Machine Operator" },
+    {
+      label:
+        "Certificate Program on Assembly and Servicing of Domestic Refrigerator",
+    },
+    {
+      label:
+        "Certificate Program on Installation and Servicing of Split Air Conditioner",
+    },
+    {
+      label:
+        "Certificate Program on Solar Panel Roof Top Installation and Servicing",
+    },
+    { label: "Certificate Program in Piping Design" },
+    {
+      label:
+        "Certificate Program in Welding Technology (SMAW, TIG, MIG & Gas Welding, Cutting & Spot Welding Machines)",
+    },
+    { label: "Certificate Program in Plumbing & Sanitation" },
+    {
+      label:
+        "Certificate Program in Wiring, Installation And Maintenance of Electrical System",
+    },
+    { label: "Certificate Program in Front Office Operation" },
+    { label: "Certificate Program in Office Administration" },
+    { label: "Certificate Program in Fire Technology" },
+    { label: "Certificate Program in Medical Lab Technology" },
+    { label: "Certificate Program in Public Relations" },
+    { label: "Certificate Program in Journalism" },
+    { label: "Certificate Program in C T Scan and MRI Tech." },
+    { label: "Certificate Program in Smart TV Repairing" },
+    { label: "Certificate Program for Mobile Phone Repairing" },
+    { label: "Certificate Program for Fireman" },
+    { label: "Computer Aided Textile Designing (CATD)" },
+    { label: "Computer Aided Fashion Designing" },
+    { label: "Clothing and Fashion Technology (CFT)" },
+    { label: "Training in Value Addition Technology & Fashion Clothing" },
+    { label: "Handloom and Textile Technology" },
+    { label: "Diploma in Health & Sanitary Inspector" },
+    { label: "Diploma in Multimedia Animation VFX" },
+    { label: "Diploma in Interior Design" },
+    { label: "Diploma in Fashion Design" },
+    { label: "Diploma in Hardware and Networking" },
+    { label: "D.PHARM" },
+    { label: "B.PHARM" },
+    { label: "LLB" },
+    { label: "LLM" },
+    { label: "BA LLB" },
+    { label: "GNM" },
+  ];
 
   const Numbers = Array.from({ length: 13 }, (_, i) => String(i + 1));
 
@@ -279,19 +305,18 @@ function Form() {
   const handleDateOfBirthChange = (e) => {
     let input = e.target.value;
     // Remove non-numeric characters
-    input = input.replace(/\D/g, '');
+    input = input.replace(/\D/g, "");
 
     // Insert "/" after the day and month inputs
-    if (input.length > 2 && input.charAt(2) !== '/') {
-      input = input.slice(0, 2) + '/' + input.slice(2);
+    if (input.length > 2 && input.charAt(2) !== "/") {
+      input = input.slice(0, 2) + "/" + input.slice(2);
     }
-    if (input.length > 5 && input.charAt(5) !== '/') {
-      input = input.slice(0, 5) + '/' + input.slice(5);
+    if (input.length > 5 && input.charAt(5) !== "/") {
+      input = input.slice(0, 5) + "/" + input.slice(5);
     }
 
     setdateofbirth(input);
   };
-
 
   //This function is used to Add Student Details
   const handleCreate = async () => {
@@ -317,20 +342,20 @@ function Form() {
         ParentsContactNumber: parentscontactnumber,
         DateOfBirth: dateofbirth,
         AcademicYear: academicyear,
-        Numbers: banumbers
+        Numbers: banumbers,
       });
       if (photo) {
         const photoPath = `profile_photos/${docRef.id}`;
         const photoRef = ref(storage, photoPath);
-        const photoURL =  await uploadBytes(photoRef, photo).then((snapshot) => {
-          console.log('Uploaded a blob or file!', snapshot.ref);
+        const photoURL = await uploadBytes(photoRef, photo).then((snapshot) => {
+          console.log("Uploaded a blob or file!", snapshot.ref);
           return getDownloadURL(snapshot.ref);
         });
-        console.log('URL',photoURL, photoRef.fullPath);
+        console.log("Photo URL after upload:", photoURL); // Debugging
         await updateDoc(docRef, {
           PhotoURL: photoURL,
-          PhotoRefPath: photoRef.fullPath
-      });
+          PhotoRefPath: photoRef.fullPath,
+        });
       }
       clearStudentState();
       setShowSubmitAlertMessage(true);
@@ -340,7 +365,7 @@ function Form() {
 
   //This function is used to update Student Details
   const handleUpdate = async () => {
-    const updateValues = doc(database, DBName, selectedStudent.id)
+    const updateValues = doc(database, DBName, selectedStudent.id);
     await updateDoc(updateValues, {
       FirstName: firstname,
       LastName: lastname,
@@ -361,17 +386,17 @@ function Form() {
       ParentsContactNumber: parentscontactnumber,
       DateOfBirth: dateofbirth,
       AcademicYear: academicyear,
-      Numbers: banumbers
+      Numbers: banumbers,
     });
     clearStudentState();
     setShowUpdateAlertMessage(true);
     setOpen(true);
     setShowUpdateButton(false);
-  }
+  };
 
   // This function is used for Success Pop Close
   const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
     setOpen(false);
@@ -398,19 +423,21 @@ function Form() {
     setparentscontactnumber("");
     setdateofbirth("");
     setacademicyear("");
-  }
+  };
 
-  const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
+  const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
     height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
+    overflow: "hidden",
+    position: "absolute",
     bottom: 0,
     left: 0,
-    whiteSpace: 'nowrap',
+    whiteSpace: "nowrap",
     width: 1,
   });
+
+
 
   return (
     <div className="background-container">
@@ -420,13 +447,21 @@ function Form() {
         </div>
 
         <Link to="/StudentList" className="student-list-link">
-          <Button variant="contained" color="secondary" startIcon={<FormatListBulletedIcon />}>
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<FormatListBulletedIcon />}
+          >
             Student List
           </Button>
         </Link>
 
         <Link to="/Login" className="logout-button">
-          <Button variant="contained" color="secondary" startIcon={<LogoutIcon />}>
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<LogoutIcon />}
+          >
             logout
           </Button>
         </Link>
@@ -434,7 +469,11 @@ function Form() {
         {showUpdateAlertMessage && (
           <Stack spacing={2} sx={{ width: "100%" }}>
             <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
-              <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+              <Alert
+                onClose={handleClose}
+                severity="success"
+                sx={{ width: "100%" }}
+              >
                 <strong>Data Updated SuccessFully</strong>
               </Alert>
             </Snackbar>
@@ -444,7 +483,11 @@ function Form() {
         {showSubmitAlertMessage && (
           <Stack spacing={2} sx={{ width: "100%" }}>
             <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
-              <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+              <Alert
+                onClose={handleClose}
+                severity="success"
+                sx={{ width: "100%" }}
+              >
                 <strong>Data Added SuccessFully</strong>
               </Alert>
             </Snackbar>
@@ -457,7 +500,23 @@ function Form() {
             <Grid item xs={12}>
               <h2>Personal Information</h2>
             </Grid>
-
+            <Grid item xs={12}>
+              {photoURL && (
+                <div>
+                  {console.log("Rendering PhotoURL:", photoURL)} {/* Debugging */}
+                  <img
+                    src={photoURL}
+                    alt="Profile"
+                    style={{
+                      width: "150px",
+                      height: "150px",
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                    }}
+                  />
+                </div>
+              )}
+            </Grid>
             <Grid item xs={12} md={6}>
               <TextField
                 name="FirstName"
@@ -617,8 +676,10 @@ function Form() {
                 id="combo-box-demo"
                 name="Category"
                 options={Categories}
-                sx={{ width: '100%' }}
-                renderInput={(params) => <TextField {...params} label="Category" />}
+                sx={{ width: "100%" }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Category" />
+                )}
                 value={category}
                 onChange={(e, newValue) => setcategory(newValue)}
                 error={!!error.category}
@@ -652,8 +713,10 @@ function Form() {
                 id="combo-box-demo"
                 name="UniversityName"
                 options={UniversityNames}
-                sx={{ width: '100%' }}
-                renderInput={(params) => <TextField {...params} label="University Name" />}
+                sx={{ width: "100%" }}
+                renderInput={(params) => (
+                  <TextField {...params} label="University Name" />
+                )}
                 value={universityname}
                 onChange={(e, newValue) => setuniversityname(newValue)}
                 error={!!error.universityname}
@@ -667,15 +730,16 @@ function Form() {
                 id="combo-box-demo"
                 name="CourseName"
                 options={Courses}
-                sx={{ width: '100%' }}
-                renderInput={(params) => <TextField {...params} label="Course Name" />}
+                sx={{ width: "100%" }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Course Name" />
+                )}
                 value={coursename}
                 onChange={(e, newValue) => setcoursename(newValue)}
                 error={!!error.coursename}
                 helperText={error.coursename}
               />
             </Grid>
-
 
             {showNumberInput && (
               <Grid item xs={12} md={6}>
@@ -684,8 +748,10 @@ function Form() {
                   id="combo-box-number"
                   name="1to13"
                   options={Numbers}
-                  sx={{ width: '100%' }}
-                  renderInput={(params) => <TextField {...params} label="Course Level" />}
+                  sx={{ width: "100%" }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Course Level" />
+                  )}
                   value={banumbers}
                   onChange={(e, newValue) => setbanumbers(newValue)}
                   error={!!error.banumbers}
@@ -693,7 +759,6 @@ function Form() {
                 />
               </Grid>
             )}
-
 
             <Grid item xs={12} md={6}>
               <TextField
@@ -752,21 +817,51 @@ function Form() {
             </Grid>
 
             <Grid item xs={12}>
-              <Button component="label" color="secondary" variant="contained" startIcon={<CloudUploadIcon />}>
+              <Button
+                component="label"
+                color="secondary"
+                variant="contained"
+                startIcon={<CloudUploadIcon />}
+              >
                 Upload Your Photo
                 <input type="file" hidden onChange={handlePhotoChange} />
               </Button>
-              { photo && <p>Selected photo: {photo.name}</p> }
+              {photo && <p>Selected photo: {photo.name}</p>}
             </Grid>
 
             <Grid item xs={12} md={6}>
-              {!showUpdateButton ?
-                <Button variant="contained" color="primary" startIcon={<SaveIcon />} o fullWidth onClick={handleCreate}>Submit</Button> :
-                <Button variant="contained" color="primary" startIcon={<EditIcon />} o fullWidth onClick={handleUpdate}>Update</Button>
-              }
+              {!showUpdateButton ? (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  startIcon={<SaveIcon />}
+                  o
+                  fullWidth
+                  onClick={handleCreate}
+                >
+                  Submit
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  startIcon={<EditIcon />}
+                  o
+                  fullWidth
+                  onClick={handleUpdate}
+                >
+                  Update
+                </Button>
+              )}
             </Grid>
             <Grid item xs={12} md={6}>
-              <Button variant="contained" color="error" startIcon={<RefreshIcon />} fullWidth type="reset">
+              <Button
+                variant="contained"
+                color="error"
+                startIcon={<RefreshIcon />}
+                fullWidth
+                type="reset"
+              >
                 Reset
               </Button>
             </Grid>
